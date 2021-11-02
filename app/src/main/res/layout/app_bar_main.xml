@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Care4Pets.PopupOverlay" />
+            app:titleTextColor="@color/black"
+            app:popupTheme="@style/Theme.Care4Pets.AppBarOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 
