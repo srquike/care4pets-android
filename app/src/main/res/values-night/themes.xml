@@ -3,7 +3,7 @@
     <style name="Theme.Care4Pets" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/fondo</item>
-        <item name="colorPrimaryDark">@color/fondo</item>
+        <item name="colorPrimaryDark">#B6AD08</item>
         <item name="colorAccent">@color/black</item>
         <!-- Customize your theme here. -->
     </style>
