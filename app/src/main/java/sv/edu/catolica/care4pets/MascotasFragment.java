@@ -1,6 +1,8 @@
 package sv.edu.catolica.care4pets;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -69,6 +71,15 @@ public class MascotasFragment extends Fragment {
         lstMascotas = new ArrayList<>();
         recyclerView = (RecyclerView) vistaMascotas.findViewById(R.id.rcrMascotas);
 
+        FloatingActionButton floatingActionButton = (FloatingActionButton) vistaMascotas.findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v, "Se hizo click en el boton nueva mascota!", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         LlenarLista();
@@ -86,5 +97,7 @@ public class MascotasFragment extends Fragment {
         lstMascotas.add(new MascotaViewHolder("Mascota 3", "Descripcion de mascota 3", R.drawable.pet, true));
         lstMascotas.add(new MascotaViewHolder("Mascota 4", "Descripcion de mascota 4", R.drawable.pet, false));
         lstMascotas.add(new MascotaViewHolder("Mascota 5", "Descripcion de mascota 5", R.drawable.pet, false));
+        lstMascotas.add(new MascotaViewHolder("Mascota 6", "Descripcion de mascota 6", R.drawable.pet, true));
+        lstMascotas.add(new MascotaViewHolder("Mascota 7", "Descripcion de mascota 7", R.drawable.pet, true));
     }
 }
