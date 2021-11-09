@@ -18,6 +18,9 @@
         <action
             android:id="@+id/action_nav_home_to_agendaFragment"
             app:destination="@id/agendaFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_profesionalesFragment"
+            app:destination="@id/profesionalesFragment" />
     </fragment>
 
     <fragment
@@ -72,5 +75,14 @@
         <action
             android:id="@+id/action_nuevoEventoFragment_to_agendaFragment"
             app:destination="@id/agendaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profesionalesFragment"
+        android:name="sv.edu.catolica.care4pets.ProfesionalesFragment"
+        android:label="fragment_profesionales"
+        tools:layout="@layout/fragment_profesionales" >
+        <action
+            android:id="@+id/action_profesionalesFragment_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 </navigation>
