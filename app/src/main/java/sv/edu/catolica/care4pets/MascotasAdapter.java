@@ -12,9 +12,9 @@ import java.util.ArrayList;
 
 public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHolderMascotas> {
 
-    ArrayList<MascotaViewHolder> lstMasctoas;
+    ArrayList<MascotaModel> lstMasctoas;
 
-    public MascotasAdapter(ArrayList<MascotaViewHolder> lstMasctoas) {
+    public MascotasAdapter(ArrayList<MascotaModel> lstMasctoas) {
         this.lstMasctoas = lstMasctoas;
     }
 

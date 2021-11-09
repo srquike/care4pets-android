@@ -4,14 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -30,7 +28,7 @@ public class MascotasFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView recyclerView;
-    private ArrayList<MascotaViewHolder> lstMascotas;
+    private ArrayList<MascotaModel> lstMascotas;
     private NavController navController;
 
     public MascotasFragment() {
@@ -91,12 +89,12 @@ public class MascotasFragment extends Fragment {
 
     private void LlenarLista() {
 
-        lstMascotas.add(new MascotaViewHolder("Mascota 1", "Descripcion de mascota 1", R.drawable.pet, false));
-        lstMascotas.add(new MascotaViewHolder("Mascota 2", "Descripcion de mascota 2", R.drawable.pet, true));
-        lstMascotas.add(new MascotaViewHolder("Mascota 3", "Descripcion de mascota 3", R.drawable.pet, true));
-        lstMascotas.add(new MascotaViewHolder("Mascota 4", "Descripcion de mascota 4", R.drawable.pet, false));
-        lstMascotas.add(new MascotaViewHolder("Mascota 5", "Descripcion de mascota 5", R.drawable.pet, false));
-        lstMascotas.add(new MascotaViewHolder("Mascota 6", "Descripcion de mascota 6", R.drawable.pet, true));
-        lstMascotas.add(new MascotaViewHolder("Mascota 7", "Descripcion de mascota 7", R.drawable.pet, true));
+        lstMascotas.add(new MascotaModel("Mascota 1", "Descripcion de mascota 1", R.drawable.pet, false));
+        lstMascotas.add(new MascotaModel("Mascota 2", "Descripcion de mascota 2", R.drawable.pet, true));
+        lstMascotas.add(new MascotaModel("Mascota 3", "Descripcion de mascota 3", R.drawable.pet, true));
+        lstMascotas.add(new MascotaModel("Mascota 4", "Descripcion de mascota 4", R.drawable.pet, false));
+        lstMascotas.add(new MascotaModel("Mascota 5", "Descripcion de mascota 5", R.drawable.pet, false));
+        lstMascotas.add(new MascotaModel("Mascota 6", "Descripcion de mascota 6", R.drawable.pet, true));
+        lstMascotas.add(new MascotaModel("Mascota 7", "Descripcion de mascota 7", R.drawable.pet, true));
     }
 }

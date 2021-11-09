@@ -1,13 +1,13 @@
 package sv.edu.catolica.care4pets;
 
-public class MascotaViewHolder {
+public class MascotaModel {
 
     private String nombre;
     private String descripcion;
     private int foto;
     private boolean tieneNotificacines;
 
-    public MascotaViewHolder(String nombre, String descripcion, int foto, boolean tieneNotificacines) {
+    public MascotaModel(String nombre, String descripcion, int foto, boolean tieneNotificacines) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.foto = foto;

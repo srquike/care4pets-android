@@ -13,10 +13,10 @@
         android:layout_margin="20dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imvFoto"
+            android:id="@+id/imvIcono"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/pet"/>
+            android:src="@drawable/calendar"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,24 +26,16 @@
 
             <TextView
                 android:id="@+id/txvNombre"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Mascota 1"
+                android:text="Evento 1"
                 android:textSize="30sp"/>
 
             <TextView
                 android:id="@+id/txvDescripcion"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Resumen sobre los datos de la mascota"/>
-
-            <ImageView
-                android:id="@+id/imvNotificacion"
-                android:layout_width="25dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:visibility="visible"
-                app:srcCompat="@drawable/notification" />
+                android:text="Resumen sobre los datos del evento"/>
 
         </LinearLayout>
 
