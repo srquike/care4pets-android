@@ -21,4 +21,12 @@
         <item>Gato</item>
         <item>Perro</item>
     </string-array>
+    <string-array name="tipoEventos">
+        <item>Baño</item>
+        <item>Corte de pelo</item>
+        <item>Desparasitación</item>
+        <item>Vacunación</item>
+        <item>Cita médica</item>
+        <item>Esterilización</item>
+    </string-array>
 </resources>

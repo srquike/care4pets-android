@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NuevoEventoFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edtFechaEvento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese la fecha para el evento"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:minHeight="48dp"/>
+
+            <ImageView
+                android:id="@+id/imvFechaEvento"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_menu_my_calendar"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hora"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edtHoraEvento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Ingrese la hora para el evento"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:minHeight="48dp"/>
+
+            <ImageView
+                android:id="@+id/imvHoraEvento"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@android:drawable/ic_lock_idle_alarm" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tipo de evento"/>
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/tipoEventos"
+            android:minHeight="48dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descripción"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Ingrese la descripción para el evento"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:minHeight="48dp"/>
+
+    </LinearLayout>
+
+</FrameLayout>

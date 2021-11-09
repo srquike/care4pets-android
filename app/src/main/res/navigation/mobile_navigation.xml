@@ -60,5 +60,17 @@
         <action
             android:id="@+id/action_agendaFragment_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_agendaFragment_to_nuevoEventoFragment"
+            app:destination="@id/nuevoEventoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nuevoEventoFragment"
+        android:name="sv.edu.catolica.care4pets.NuevoEventoFragment"
+        android:label="fragment_nuevo_evento"
+        tools:layout="@layout/fragment_nuevo_evento" >
+        <action
+            android:id="@+id/action_nuevoEventoFragment_to_agendaFragment"
+            app:destination="@id/agendaFragment" />
     </fragment>
 </navigation>
