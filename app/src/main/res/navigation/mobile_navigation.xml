@@ -15,6 +15,9 @@
             app:destination="@id/mascotasFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:popEnterAnim="@android:anim/slide_in_left" />
+        <action
+            android:id="@+id/action_nav_home_to_agendaFragment"
+            app:destination="@id/agendaFragment" />
     </fragment>
 
     <fragment
@@ -43,10 +46,19 @@
     <fragment
         android:id="@+id/nuevaMascotaFragment"
         android:name="sv.edu.catolica.care4pets.NuevaMascotaFragment"
-        android:label="fragment_nueva_mascota"
+        android:label="Nueva mascosta"
         tools:layout="@layout/fragment_nueva_mascota" >
         <action
             android:id="@+id/action_nuevaMascotaFragment_to_mascotasFragment"
             app:destination="@id/mascotasFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/agendaFragment"
+        android:name="sv.edu.catolica.care4pets.AgendaFragment"
+        android:label="Agenda"
+        tools:layout="@layout/fragment_agenda" >
+        <action
+            android:id="@+id/action_agendaFragment_to_nav_home"
+            app:destination="@id/nav_home" />
     </fragment>
 </navigation>
