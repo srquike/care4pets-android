@@ -1,40 +1,35 @@
 package sv.edu.catolica.care4pets;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfesionalesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import java.util.ArrayList;
+
 public class ProfesionalesFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ArrayList<ProfesionalModel> lstProfesionales;
+    private RecyclerView rcvProfesionales;
+    private NavController navController;
 
     public ProfesionalesFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfesionalesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ProfesionalesFragment newInstance(String param1, String param2) {
         ProfesionalesFragment fragment = new ProfesionalesFragment();
         Bundle args = new Bundle();
@@ -56,7 +51,45 @@ public class ProfesionalesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profesionales, container, false);
+        View view = inflater.inflate(R.layout.fragment_profesionales, container, false);
+
+        lstProfesionales = new ArrayList<>();
+        rcvProfesionales = (RecyclerView) view.findViewById(R.id.rcrProfesionales);
+
+        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // navController.navigate(R.id.nuevaMascotaFragment);
+            }
+        });
+
+        rcvProfesionales.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        LlenarLista();
+
+        ProfesionalesAdapter adapter = new ProfesionalesAdapter(lstProfesionales);
+
+        rcvProfesionales.setAdapter(adapter);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        navController = Navigation.findNavController(view);
+    }
+
+    private void LlenarLista() {
+
+        lstProfesionales.add(new ProfesionalModel("Profesional 1", "Descripcion de profesional 1", R.drawable.businessman));
+        lstProfesionales.add(new ProfesionalModel("Profesional 5", "Descripcion de profesional 5", R.drawable.businessman));
+        lstProfesionales.add(new ProfesionalModel("Profesional 6", "Descripcion de profesional 6", R.drawable.businessman));
+        lstProfesionales.add(new ProfesionalModel("Profesional 7", "Descripcion de profesional 7", R.drawable.businessman));
+        lstProfesionales.add(new ProfesionalModel("Profesional 3", "Descripcion de profesional 3", R.drawable.businessman));
+        lstProfesionales.add(new ProfesionalModel("Profesional 4", "Descripcion de profesional 4", R.drawable.businessman));
+        lstProfesionales.add(new ProfesionalModel("Profesional 2", "Descripcion de profesional 2", R.drawable.businessman));
     }
 }

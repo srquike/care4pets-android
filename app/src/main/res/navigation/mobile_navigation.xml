@@ -70,7 +70,7 @@
     <fragment
         android:id="@+id/nuevoEventoFragment"
         android:name="sv.edu.catolica.care4pets.NuevoEventoFragment"
-        android:label="fragment_nuevo_evento"
+        android:label="Nuevo evento"
         tools:layout="@layout/fragment_nuevo_evento" >
         <action
             android:id="@+id/action_nuevoEventoFragment_to_agendaFragment"
@@ -79,7 +79,7 @@
     <fragment
         android:id="@+id/profesionalesFragment"
         android:name="sv.edu.catolica.care4pets.ProfesionalesFragment"
-        android:label="fragment_profesionales"
+        android:label="Profesionales"
         tools:layout="@layout/fragment_profesionales" >
         <action
             android:id="@+id/action_profesionalesFragment_to_nav_home"
