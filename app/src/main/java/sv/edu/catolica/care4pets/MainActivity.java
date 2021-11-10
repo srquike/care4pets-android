@@ -1,5 +1,6 @@
 package sv.edu.catolica.care4pets;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -17,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import sv.edu.catolica.care4pets.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
+    //ControladorBD adminDB;
+    //SQLiteDatabase db;
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
@@ -29,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        //adminDB =new ControladorBD(this,"DBCare4Pets",null,1);
+        //db = adminDB.getWritableDatabase();
 
         // Código para el botón flotante
         /* binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
