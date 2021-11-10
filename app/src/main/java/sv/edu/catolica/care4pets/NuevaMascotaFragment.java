@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -101,5 +102,22 @@ public class NuevaMascotaFragment extends Fragment {
         }, year, mes, dia);
 
         datePickerDialog.show();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.btnAceptar:
+
+                break;
+            case R.id.btnCancelar:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+
+
+
     }
 }
