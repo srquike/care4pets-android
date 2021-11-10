@@ -29,4 +29,9 @@
         <item>Cita médica</item>
         <item>Esterilización</item>
     </string-array>
+    <string-array name="profesiones">
+        <item>Veterinario</item>
+        <item>Estilista</item>
+        <item>Entrenador</item>
+    </string-array>
 </resources>
