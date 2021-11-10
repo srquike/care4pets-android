@@ -16,11 +16,6 @@ import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MascotasFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class MascotasFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";

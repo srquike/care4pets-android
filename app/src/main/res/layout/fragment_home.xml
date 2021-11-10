@@ -59,6 +59,7 @@
         android:layout_marginTop="40dp">
 
         <ImageView
+            android:id="@+id/imvProfesionales"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/businessman"/>
