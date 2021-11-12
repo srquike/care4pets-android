@@ -2,6 +2,8 @@ package sv.edu.catolica.care4pets;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +15,9 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,10 +31,14 @@ public class NuevoEventoFragment extends Fragment {
     private String mParam2;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-    private EditText edtFechaEvento, edtHoraEvento;
+    private EditText edtFechaEvento, edtHoraEvento, edtDescripcion;
     private ImageView imvFechaEvento, imvHoraEvento;
     private TimePickerDialog timePickerDialog;
     private final SimpleDateFormat timeformat = new SimpleDateFormat("HH:mm a");
+    private Spinner spnEvento;
+
+    ControladorBD adminDB;
+    SQLiteDatabase db;
 
     public NuevoEventoFragment() {
 
@@ -54,6 +62,10 @@ public class NuevoEventoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getWritableDatabase();
+
     }
 
     @Override
@@ -71,6 +83,8 @@ public class NuevoEventoFragment extends Fragment {
         edtHoraEvento = view.findViewById(R.id.edtHoraEvento);
         imvFechaEvento = view.findViewById(R.id.imvFechaEvento);
         imvHoraEvento = view.findViewById(R.id.imvHoraEvento);
+        edtDescripcion = view.findViewById(R.id.edtDescripcion);
+        spnEvento = view.findViewById(R.id.spnEvento);
 
         imvFechaEvento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,4 +133,35 @@ public class NuevoEventoFragment extends Fragment {
 
         timePickerDialog.show();
     }
+
+    private void insertToDB(){
+
+        ContentValues values = new ContentValues();
+        values.put("ID_Evento",1);
+        values.put("Fecha", edtFechaEvento.getText().toString());
+        values.put("Hora",edtHoraEvento.getText().toString());
+        values.put("TipoEvento",spnEvento.getSelectedItem().toString());
+        values.put("Descripcion",edtDescripcion.getText().toString());
+
+        long id = db.insert("Evento",null,values);
+        if (id>0){
+            MostrarMensaje("Evento Agregado");
+        }else{
+            MostrarMensaje("Error al Ingresar Datos");
+        }
+        LimpiarCasillas();
+        db.close();
+    }
+
+    private void LimpiarCasillas() {
+        edtFechaEvento.setText("");
+        edtHoraEvento.setText("");
+        edtDescripcion.setText("");
+
+    }
+
+    private void MostrarMensaje(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
 }
