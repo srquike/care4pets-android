@@ -60,7 +60,7 @@ public class ProfesionalesFragment extends Fragment {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // navController.navigate(R.id.nuevaMascotaFragment);
+                navController.navigate(R.id.nuevoProfesionalFragment);
             }
         });
 

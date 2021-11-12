@@ -84,5 +84,17 @@
         <action
             android:id="@+id/action_profesionalesFragment_to_nav_home"
             app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_profesionalesFragment_to_nuevoProfesionalFragment"
+            app:destination="@id/nuevoProfesionalFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nuevoProfesionalFragment"
+        android:name="sv.edu.catolica.care4pets.NuevoProfesionalFragment"
+        android:label="Nuevo profesional"
+        tools:layout="@layout/fragment_nuevo_profesional" >
+        <action
+            android:id="@+id/action_nuevoProfesionalFragment_to_profesionalesFragment"
+            app:destination="@id/profesionalesFragment" />
     </fragment>
 </navigation>
