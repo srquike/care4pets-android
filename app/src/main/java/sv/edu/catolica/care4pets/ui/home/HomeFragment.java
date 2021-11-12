@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.arch.lifecycle.Observer;
+
 import android.arch.lifecycle.ViewModelProvider;
 
 import androidx.navigation.NavController;
@@ -22,7 +22,7 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
-    private ImageView imvMisMascotas, imvAgenda, imvProfesionales;
+    private ImageView imvMisMascotas, imvAgenda, imvProfesionales, imvAlimentos;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class HomeFragment extends Fragment {
         imvMisMascotas = view.findViewById(R.id.imvMisMascotas);
         imvAgenda = view.findViewById(R.id.imvAgenda);
         imvProfesionales = view.findViewById(R.id.imvProfesionales);
-
+        imvAlimentos = view.findViewById(R.id.imvAlimentos);
 
         imvMisMascotas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +72,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 navController.navigate(R.id.profesionalesFragment);
+            }
+        });
+
+        imvAlimentos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.alimentosFragment);
             }
         });
     }

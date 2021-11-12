@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_nav_home_to_profesionalesFragment"
             app:destination="@id/profesionalesFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_alimentosFragment"
+            app:destination="@id/alimentosFragment" />
     </fragment>
 
     <fragment
@@ -96,5 +99,26 @@
         <action
             android:id="@+id/action_nuevoProfesionalFragment_to_profesionalesFragment"
             app:destination="@id/profesionalesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/alimentosFragment"
+        android:name="sv.edu.catolica.care4pets.AlimentosFragment"
+        android:label="Alimentos"
+        tools:layout="@layout/fragment_alimentos" >
+        <action
+            android:id="@+id/action_alimentosFragment_to_nav_home"
+            app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_alimentosFragment_to_nuevoAlimentoFragment"
+            app:destination="@id/nuevoAlimentoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nuevoAlimentoFragment"
+        android:name="sv.edu.catolica.care4pets.NuevoAlimentoFragment"
+        android:label="Nuevo alimento"
+        tools:layout="@layout/fragment_nuevo_alimento" >
+        <action
+            android:id="@+id/action_nuevoAlimentoFragment_to_alimentosFragment"
+            app:destination="@id/alimentosFragment" />
     </fragment>
 </navigation>

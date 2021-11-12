@@ -34,4 +34,16 @@
         <item>Estilista</item>
         <item>Entrenador</item>
     </string-array>
+    <string-array name="tiposAlimentos">
+        <item>Alimento principal</item>
+        <item>Suplemento</item>
+        <item>Premio</item>
+    </string-array>
+    <string-array name="unidades">
+        <item>Libras</item>
+        <item>Onzas</item>
+        <item>Fl Oz</item>
+        <item>Kilos</item>
+        <item>Unidades</item>
+    </string-array>
 </resources>
