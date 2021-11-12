@@ -30,7 +30,7 @@ public class NuevaMascotaFragment extends Fragment {
     private ImageView imvFechaNacimiento, imvFechaEsterilizacion;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-    private String fecha;
+    //private String fecha;
     private Spinner spnSexo, spnEspecie;
     private RadioButton rbSi,rbNo;
 

@@ -25,6 +25,7 @@
             android:text="Nombre"/>
 
         <EditText
+            android:id="@+id/txtNombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba el nombre del profesional"
@@ -37,6 +38,7 @@
             android:text="Profesión"/>
 
         <Spinner
+            android:id="@+id/spnProfesion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:entries="@array/profesiones"
@@ -55,6 +57,7 @@
             android:text="Teléfono"/>
 
         <EditText
+            android:id="@+id/txtTelefono"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba el número de teléfono del profesional"
@@ -67,6 +70,7 @@
             android:text="Celular"/>
 
         <EditText
+            android:id="@+id/txtCelular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba el número de celular del profesional"
@@ -79,6 +83,7 @@
             android:text="Corre eletrónico"/>
 
         <EditText
+            android:id="@+id/txtCorreo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba el corre electrónico del profesional"
@@ -98,6 +103,7 @@
             android:text="Dirección"/>
 
         <EditText
+            android:id="@+id/txtDireccion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba la direción del profesional"

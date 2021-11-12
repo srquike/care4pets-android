@@ -19,9 +19,9 @@ public class ControladorBD extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Mascotas(ID_pet integer primary key,Nombre text, Raza text,Sexo text,Especie text, Color text,FechaNaci date,Esterilizacion boolean,FechaEsterilizacion date)");
         db.execSQL("CREATE TABLE Evento(ID_Evento integer primary key,Nombre text, Fecha date,Hora datetime,Mascota text,TipoEvento text,Descripcion text)");
         db.execSQL("CREATE TABLE Medicamentos(ID_Medicamento integer primary key,Nombre text,dosis integer,hora_ini datetime,notas text)");
-        db.execSQL("CREATE TABLE Alimentos(ID_comida integer primary key,Nombre text, cantidad integer,fecha_ini date,Tomas integer,Notas text)");
+        db.execSQL("CREATE TABLE Alimentos(ID_comida integer primary key,Nombre text, cantidad integer,fecha_ini date,Tomas integer,Notas text, TipoComida text, Unidad text)");
         db.execSQL("CREATE TABLE Recordatorio(integer primary key,Nombre text,Fecha date,notas text) ");
-        db.execSQL("CREATE TABLE Profesionales(ID_Profesionales integer primary key,Nombre text,Apellido text,Correo text,Telefono int)");
+        db.execSQL("CREATE TABLE Profesionales(ID_Profesionales integer primary key,Nombre text,Apellido text,Correo text,Telefono int,Profesion text,Celular integer, Direccion text)");
 
 
     }
