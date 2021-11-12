@@ -24,11 +24,12 @@
             android:text="Nombre"/>
 
         <EditText
+            android:id="@+id/txtNombre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba el nombre del medicamento"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:minHeight="48dp"/>
+            android:minHeight="48dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <TextView
             android:layout_width="match_parent"
@@ -36,10 +37,11 @@
             android:text="Presentación"/>
 
         <Spinner
+            android:id="@+id/spnPresentacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:entries="@array/tiposMedicamentos"/>
+            android:entries="@array/tiposMedicamentos"
+            android:minHeight="48dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -52,13 +54,15 @@
             android:orientation="horizontal">
 
             <EditText
+                android:id="@+id/txtCantidad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Escriba la cantidad del medicamento"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:minHeight="48dp"/>
+                android:minHeight="48dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <Spinner
+                android:id="@+id/spnUnidad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -102,11 +106,12 @@
             android:text="Laboratorio"/>
 
         <EditText
+            android:id="@+id/txtLaboratorio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba el nombre del laboratorio"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:minHeight="48dp"/>
+            android:minHeight="48dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <TextView
             android:layout_width="match_parent"
@@ -114,11 +119,12 @@
             android:text="Notas"/>
 
         <EditText
+            android:id="@+id/txtNotas"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Escriba algunas notas sobre el medicamento"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:minHeight="48dp"/>
+            android:minHeight="48dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
     </LinearLayout>
 
