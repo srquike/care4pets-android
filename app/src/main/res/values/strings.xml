@@ -6,7 +6,6 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
-
     <string name="menu_home">Care4Pets</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
@@ -45,5 +44,16 @@
         <item>Fl Oz</item>
         <item>Kilos</item>
         <item>Unidades</item>
+        <item>Mililitros</item>
+        <item>Gramos</item>
+    </string-array>
+    <string-array name="tiposMedicamentos">
+        <item>Jarabe</item>
+        <item>Suspensión y emulsión</item>
+        <item>Gotas</item>
+        <item>Viales</item>
+        <item>Comprimidos</item>
+        <item>Cápsula</item>
+        <item>Polvo</item>
     </string-array>
 </resources>

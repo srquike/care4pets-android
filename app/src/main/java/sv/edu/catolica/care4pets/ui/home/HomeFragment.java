@@ -22,7 +22,7 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
-    private ImageView imvMisMascotas, imvAgenda, imvProfesionales, imvAlimentos;
+    private ImageView imvMisMascotas, imvAgenda, imvProfesionales, imvAlimentos, imvMedicamentos;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +53,7 @@ public class HomeFragment extends Fragment {
         imvAgenda = view.findViewById(R.id.imvAgenda);
         imvProfesionales = view.findViewById(R.id.imvProfesionales);
         imvAlimentos = view.findViewById(R.id.imvAlimentos);
+        imvMedicamentos = view.findViewById(R.id.imvMedicamentos);
 
         imvMisMascotas.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +80,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 navController.navigate(R.id.alimentosFragment);
+            }
+        });
+
+        imvMedicamentos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.medicamentosFragment);
             }
         });
     }

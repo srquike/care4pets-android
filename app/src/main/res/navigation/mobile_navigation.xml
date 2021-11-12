@@ -24,6 +24,9 @@
         <action
             android:id="@+id/action_nav_home_to_alimentosFragment"
             app:destination="@id/alimentosFragment" />
+        <action
+            android:id="@+id/action_nav_home_to_medicamentosFragment"
+            app:destination="@id/medicamentosFragment" />
     </fragment>
 
     <fragment
@@ -120,5 +123,26 @@
         <action
             android:id="@+id/action_nuevoAlimentoFragment_to_alimentosFragment"
             app:destination="@id/alimentosFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/medicamentosFragment"
+        android:name="sv.edu.catolica.care4pets.MedicamentosFragment"
+        android:label="Medicamentos"
+        tools:layout="@layout/fragment_medicamentos" >
+        <action
+            android:id="@+id/action_medicamentosFragment_to_nav_home"
+            app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_medicamentosFragment_to_nuevoMedicamentoFragment"
+            app:destination="@id/nuevoMedicamentoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nuevoMedicamentoFragment"
+        android:name="sv.edu.catolica.care4pets.NuevoMedicamentoFragment"
+        android:label="Nuevo medicamento"
+        tools:layout="@layout/fragment_nuevo_medicamento">
+        <action
+            android:id="@+id/action_nuevoMedicamentoFragment_to_medicamentosFragment"
+            app:destination="@id/medicamentosFragment" />
     </fragment>
 </navigation>

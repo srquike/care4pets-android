@@ -22,7 +22,7 @@ public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdap
     @Override
     public ProfesionalesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.profesinal_item, null, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.profesional_item, null, false);
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
 
