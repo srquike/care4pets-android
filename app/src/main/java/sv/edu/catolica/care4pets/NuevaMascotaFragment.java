@@ -1,6 +1,8 @@
 package sv.edu.catolica.care4pets;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -20,14 +25,23 @@ public class NuevaMascotaFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-    private EditText edtFechaEsterilizacion;
+    private EditText edtFechaEsterilizacion, edtNombre, edtRaza, edtColor;
     private EditText edtFechaNacimiento;
     private ImageView imvFechaNacimiento, imvFechaEsterilizacion;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
     private String fecha;
+    private Spinner spnSexo, spnEspecie;
+    private RadioButton rbSi,rbNo;
+
+
+
+
+    ControladorBD adminDB;
+    SQLiteDatabase db;
 
     public NuevaMascotaFragment() {
+
 
     }
 
@@ -38,6 +52,9 @@ public class NuevaMascotaFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+
+
+
     }
 
     @Override
@@ -49,11 +66,18 @@ public class NuevaMascotaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getWritableDatabase();
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.save_or_cancel_menu, menu);
+
+
     }
 
     @Override
@@ -66,6 +90,16 @@ public class NuevaMascotaFragment extends Fragment {
         edtFechaEsterilizacion = vista.findViewById(R.id.edtFechaEsterilizacion);
         imvFechaNacimiento = vista.findViewById(R.id.imVFechaNacimiento);
         imvFechaEsterilizacion = vista.findViewById(R.id.imVFechaEsterilizacion);
+
+        //aqui se inician las variables
+        edtNombre = vista.findViewById(R.id.txtNombre);
+        spnSexo = vista.findViewById(R.id.spnSexo);
+        spnEspecie = vista.findViewById(R.id.spnEspecie);
+        edtRaza = vista.findViewById(R.id.txtRaza);
+        edtColor = vista.findViewById(R.id.txtColor);
+        rbSi = vista.findViewById(R.id.rbSi);
+        rbNo = vista.findViewById(R.id.rbNo);
+
 
         imvFechaNacimiento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +143,7 @@ public class NuevaMascotaFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.btnAceptar:
+                insertToDB();
 
                 break;
             case R.id.btnCancelar:
@@ -120,4 +155,48 @@ public class NuevaMascotaFragment extends Fragment {
 
 
     }
+
+
+    private void insertToDB(){
+
+        ContentValues values = new ContentValues();
+        values.put("ID_pet",1);
+        values.put("Nombre", edtNombre.getText().toString());
+        values.put("Raza",edtRaza.getText().toString());
+        values.put("Sexo",spnSexo.getSelectedItem().toString());
+        values.put("Especie",spnEspecie.getSelectedItem().toString());
+        values.put("Color",edtColor.getText().toString());
+        values.put("FechaNaci",edtFechaNacimiento.getText().toString());
+        values.put("FechaEsterilizacion",edtFechaEsterilizacion.getText().toString());
+        if (rbSi.isChecked()){
+            values.put("Esterilizacion",true);
+        }else if(rbNo.isChecked()){
+            values.put("Esterilizacion",false);
+        }
+
+
+        long id = db.insert("Mascotas",null,values);
+        if (id>0){
+            MostrarMensaje("Mascota Agregada");
+        }else{
+            MostrarMensaje("Error al Ingresar Datos");
+        }
+        LimpiarCasillas();
+        db.close();
+    }
+
+    private void LimpiarCasillas() {
+        edtNombre.setText("");
+        edtRaza.setText("");
+        edtColor.setText("");
+        edtFechaEsterilizacion.setText("");
+        edtFechaEsterilizacion.setText("");
+
+        
+    }
+
+    private void MostrarMensaje(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
 }
