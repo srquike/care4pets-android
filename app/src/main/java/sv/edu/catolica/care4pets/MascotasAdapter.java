@@ -10,9 +10,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHolderMascotas> {
+public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHolderMascotas> implements View.OnClickListener {
 
-    ArrayList<MascotaModel> lstMasctoas;
+    private ArrayList<MascotaModel> lstMasctoas;
+    private View.OnClickListener onClickListener;
 
     public MascotasAdapter(ArrayList<MascotaModel> lstMasctoas) {
         this.lstMasctoas = lstMasctoas;
@@ -24,8 +25,13 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHo
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.mascota_item, null, false);
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
+        view.setOnClickListener(this);
 
         return new ViewHolderMascotas(view);
+    }
+
+    public void setOnClickListener(View.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -44,6 +50,13 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHo
     @Override
     public int getItemCount() {
         return lstMasctoas.size();
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (onClickListener != null) {
+            onClickListener.onClick(v);
+        }
     }
 
     public class ViewHolderMascotas extends RecyclerView.ViewHolder {

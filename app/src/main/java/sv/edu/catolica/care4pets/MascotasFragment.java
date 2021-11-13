@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -57,6 +58,8 @@ public class MascotasFragment extends Fragment {
         lstMascotas = new ArrayList<>();
         recyclerView = (RecyclerView) vistaMascotas.findViewById(R.id.rcrMascotas);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         FloatingActionButton floatingActionButton = (FloatingActionButton) vistaMascotas.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,13 +68,17 @@ public class MascotasFragment extends Fragment {
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         LlenarLista();
 
         MascotasAdapter adapter = new MascotasAdapter(lstMascotas);
-
+        adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Se seleccionó: " + lstMascotas.get(recyclerView.getChildAdapterPosition(v)).getNombre(), Toast.LENGTH_LONG).show();
+            }
+        });
         recyclerView.setAdapter(adapter);
+
         return vistaMascotas;
     }
 
