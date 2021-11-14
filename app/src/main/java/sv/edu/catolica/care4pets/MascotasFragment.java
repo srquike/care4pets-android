@@ -1,5 +1,6 @@
 package sv.edu.catolica.care4pets;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -74,7 +75,8 @@ public class MascotasFragment extends Fragment {
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Se seleccionó: " + lstMascotas.get(recyclerView.getChildAdapterPosition(v)).getNombre(), Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(getActivity(), PerfilMascotaActivity.class);
+                startActivity(intent);
             }
         });
         recyclerView.setAdapter(adapter);

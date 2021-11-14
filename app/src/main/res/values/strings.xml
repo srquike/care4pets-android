@@ -56,4 +56,8 @@
         <item>Cápsula</item>
         <item>Polvo</item>
     </string-array>
+    <string name="title_activity_perfil_mascota">PerfilMascotaActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 </resources>
