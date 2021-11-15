@@ -2,6 +2,7 @@ package sv.edu.catolica.care4pets;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -148,6 +149,10 @@ public class NuevaMascotaFragment extends Fragment {
                 break;
             case R.id.btnCancelar:
                 break;
+
+            case R.id.btnBuscar:
+                //BuscarMascota();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -160,7 +165,7 @@ public class NuevaMascotaFragment extends Fragment {
     private void insertToDB(){
 
         ContentValues values = new ContentValues();
-        values.put("ID_pet",1);
+        //values.put("ID_pet",5);
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Raza",edtRaza.getText().toString());
         values.put("Sexo",spnSexo.getSelectedItem().toString());
@@ -189,7 +194,7 @@ public class NuevaMascotaFragment extends Fragment {
         edtNombre.setText("");
         edtRaza.setText("");
         edtColor.setText("");
-        edtFechaEsterilizacion.setText("");
+        edtFechaNacimiento.setText("");
         edtFechaEsterilizacion.setText("");
 
         
@@ -198,5 +203,20 @@ public class NuevaMascotaFragment extends Fragment {
     private void MostrarMensaje(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
+
+    /*public void BuscarMascota(){
+        db = adminDB.getWritableDatabase();
+
+        //String codMascota = edtNombre.getText().toString();
+        String sql ="SELECT * FROM Mascotas";
+        Cursor fila = db.rawQuery(sql,null);
+        if (fila.moveToFirst()){
+            edtNombre.setText(fila.getString(0));
+        }else {
+            MostrarMensaje("Error");
+        }
+    }*/
+
+
 
 }
