@@ -1,15 +1,48 @@
 package sv.edu.catolica.care4pets;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class EventoModel {
 
     private String nombre;
     private String descripcion;
     private int icono;
+    private int id;
+    private LocalDate fecha;
+    private LocalTime hora;
+    private String tipoEvento;
 
-    public EventoModel(String nombre, String descripcion, int icono) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.icono = icono;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public LocalTime getHora() {
+        return hora;
+    }
+
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
+    }
+
+    public String getTipoEvento() {
+        return tipoEvento;
+    }
+
+    public void setTipoEvento(String tipoEvento) {
+        this.tipoEvento = tipoEvento;
     }
 
     public String getNombre() {

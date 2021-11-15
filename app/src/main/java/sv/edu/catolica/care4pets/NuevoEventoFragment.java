@@ -33,14 +33,13 @@ public class NuevoEventoFragment extends Fragment {
     private String mParam2;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-    private EditText edtFechaEvento, edtHoraEvento, edtDescripcion;
+    private EditText edtFechaEvento, edtHoraEvento, edtDescripcion, edtNombreEvento;
     private ImageView imvFechaEvento, imvHoraEvento;
     private TimePickerDialog timePickerDialog;
     private final SimpleDateFormat timeformat = new SimpleDateFormat("HH:mm a");
     private Spinner spnEvento;
-
-    ControladorBD adminDB;
-    SQLiteDatabase db;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public NuevoEventoFragment() {
 
@@ -64,10 +63,6 @@ public class NuevoEventoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getWritableDatabase();
-
     }
 
     @Override
@@ -95,10 +90,14 @@ public class NuevoEventoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getWritableDatabase();
+
         View view = inflater.inflate(R.layout.fragment_nuevo_evento, container, false);
 
         edtFechaEvento = view.findViewById(R.id.edtFechaEvento);
         edtHoraEvento = view.findViewById(R.id.edtHoraEvento);
+        edtNombreEvento = view.findViewById(R.id.edtNombreEvento);
         imvFechaEvento = view.findViewById(R.id.imvFechaEvento);
         imvHoraEvento = view.findViewById(R.id.imvHoraEvento);
         edtDescripcion = view.findViewById(R.id.edtDescripcion);
@@ -157,6 +156,7 @@ public class NuevoEventoFragment extends Fragment {
         ContentValues values = new ContentValues();
         //values.put("ID_Evento",1);
         values.put("Fecha", edtFechaEvento.getText().toString());
+        values.put("Nombre", edtNombreEvento.getText().toString());
         values.put("Hora",edtHoraEvento.getText().toString());
         values.put("TipoEvento",spnEvento.getSelectedItem().toString());
         values.put("Descripcion",edtDescripcion.getText().toString());
@@ -167,15 +167,8 @@ public class NuevoEventoFragment extends Fragment {
         }else{
             MostrarMensaje("Error al Ingresar Datos");
         }
-        LimpiarCasillas();
+
         db.close();
-    }
-
-    private void LimpiarCasillas() {
-        edtFechaEvento.setText("");
-        edtHoraEvento.setText("");
-        edtDescripcion.setText("");
-
     }
 
     private void MostrarMensaje(String msg) {
@@ -187,5 +180,4 @@ public class NuevoEventoFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }
-
 }

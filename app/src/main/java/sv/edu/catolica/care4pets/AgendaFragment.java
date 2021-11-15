@@ -1,5 +1,7 @@
 package sv.edu.catolica.care4pets;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,9 @@ import android.view.ViewGroup;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class AgendaFragment extends Fragment {
@@ -23,8 +28,9 @@ public class AgendaFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView rcvEventos;
-    private ArrayList<EventoModel> lstEventos;
     private NavController navController;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public AgendaFragment() {
 
@@ -51,13 +57,13 @@ public class AgendaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getReadableDatabase();
         View vista = inflater.inflate(R.layout.fragment_agenda, container, false);
         rcvEventos = (RecyclerView) vista.findViewById(R.id.rcvEventos);
-        lstEventos = new ArrayList<>();
         rcvEventos.setLayoutManager(new LinearLayoutManager(getContext()));
-
         FloatingActionButton floatingActionButton = (FloatingActionButton) vista.findViewById(R.id.fab);
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,9 +71,7 @@ public class AgendaFragment extends Fragment {
             }
         });
 
-        LlenarLista();
-
-        EventosAdapter adapter = new EventosAdapter(lstEventos);
+        EventosAdapter adapter = new EventosAdapter(obtenerListaEventos());
         rcvEventos.setAdapter(adapter);
 
         return vista;
@@ -80,14 +84,30 @@ public class AgendaFragment extends Fragment {
         navController = Navigation.findNavController(view);
     }
 
-    private void LlenarLista() {
+    private ArrayList<EventoModel> obtenerListaEventos() {
+        ArrayList<EventoModel> lstEventos = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Evento", null);
+        EventoModel eventoModel = null;
 
-        lstEventos.add(new EventoModel("Evento 1", "Descripcion de evento 1", R.drawable.calendar));
-        lstEventos.add(new EventoModel("Evento 2", "Descripcion de evento 2", R.drawable.calendar));
-        lstEventos.add(new EventoModel("Evento 3", "Descripcion de evento 3", R.drawable.calendar));
-        lstEventos.add(new EventoModel("Evento 4", "Descripcion de evento 4", R.drawable.calendar));
-        lstEventos.add(new EventoModel("Evento 5", "Descripcion de evento 5", R.drawable.calendar));
-        lstEventos.add(new EventoModel("Evento 6", "Descripcion de evento 6", R.drawable.calendar));
-        lstEventos.add(new EventoModel("Evento 7", "Descripcion de evento 7", R.drawable.calendar));
+        if (cursor.moveToFirst()) {
+            do {
+                eventoModel = new EventoModel();
+                eventoModel.setId(cursor.getInt(0));
+                eventoModel.setNombre(cursor.getString(1));
+                eventoModel.setFecha(LocalDate.parse(cursor.getString(2), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                eventoModel.setHora(LocalTime.parse(cursor.getString(3), DateTimeFormatter.ofPattern("HH:mm a")));
+                eventoModel.setTipoEvento(cursor.getString(4));
+                eventoModel.setDescripcion(cursor.getString(5));
+                eventoModel.setIcono(R.drawable.calendar);
+
+                lstEventos.add(eventoModel);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lstEventos;
     }
 }
