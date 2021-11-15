@@ -1,18 +1,21 @@
 package sv.edu.catolica.care4pets;
 
+import java.time.LocalDate;
+
 public class MascotaModel {
 
     private String nombre;
     private String descripcion;
     private int foto;
     private boolean tieneNotificacines;
-
-    public MascotaModel(String nombre, String descripcion, int foto, boolean tieneNotificacines) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.foto = foto;
-        this.tieneNotificacines = tieneNotificacines;
-    }
+    private int id;
+    private String raza;
+    private String especie;
+    private String sexo;
+    private String color;
+    private LocalDate fechaNacimiento;
+    private LocalDate fechaEsterilizacion;
+    private Boolean esterilizacion;
 
     public String getNombre() {
         return nombre;
@@ -44,5 +47,69 @@ public class MascotaModel {
 
     public void setFoto(int foto) {
         this.foto = foto;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getRaza() {
+        return raza;
+    }
+
+    public void setRaza(String raza) {
+        this.raza = raza;
+    }
+
+    public String getEspecie() {
+        return especie;
+    }
+
+    public void setEspecie(String especie) {
+        this.especie = especie;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public LocalDate getFechaEsterilizacion() {
+        return fechaEsterilizacion;
+    }
+
+    public void setFechaEsterilizacion(LocalDate fechaEsterilizacion) {
+        this.fechaEsterilizacion = fechaEsterilizacion;
+    }
+
+    public Boolean getEsterilizacion() {
+        return esterilizacion;
+    }
+
+    public void setEsterilizacion(Boolean esterilizacion) {
+        this.esterilizacion = esterilizacion;
     }
 }

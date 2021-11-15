@@ -33,15 +33,10 @@ public class NuevaMascotaFragment extends Fragment {
     private ImageView imvFechaNacimiento, imvFechaEsterilizacion;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-    //private String fecha;
     private Spinner spnSexo, spnEspecie;
     private RadioButton rbSi,rbNo;
-
-
-
-
-    ControladorBD adminDB;
-    SQLiteDatabase db;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public NuevaMascotaFragment() {
 
@@ -55,9 +50,6 @@ public class NuevaMascotaFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-
-
-
     }
 
     @Override
@@ -191,18 +183,8 @@ public class NuevaMascotaFragment extends Fragment {
         }else{
             MostrarMensaje("Error al Ingresar Datos");
         }
-        LimpiarCasillas();
+
         db.close();
-    }
-
-    private void LimpiarCasillas() {
-        edtNombre.setText("");
-        edtRaza.setText("");
-        edtColor.setText("");
-        edtFechaNacimiento.setText("");
-        edtFechaEsterilizacion.setText("");
-
-        
     }
 
     private void MostrarMensaje(String msg) {

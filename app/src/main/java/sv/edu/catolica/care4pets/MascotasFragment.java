@@ -1,6 +1,8 @@
 package sv.edu.catolica.care4pets;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +18,8 @@ import android.widget.Toast;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MascotasFragment extends Fragment {
@@ -25,8 +29,9 @@ public class MascotasFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private RecyclerView recyclerView;
-    private ArrayList<MascotaModel> lstMascotas;
     private NavController navController;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public MascotasFragment() {
 
@@ -54,14 +59,13 @@ public class MascotasFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getReadableDatabase();
         View vistaMascotas = inflater.inflate(R.layout.fragment_mascotas, container, false);
-
-        lstMascotas = new ArrayList<>();
         recyclerView = (RecyclerView) vistaMascotas.findViewById(R.id.rcrMascotas);
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
         FloatingActionButton floatingActionButton = (FloatingActionButton) vistaMascotas.findViewById(R.id.fab);
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,9 +73,7 @@ public class MascotasFragment extends Fragment {
             }
         });
 
-        LlenarLista();
-
-        MascotasAdapter adapter = new MascotasAdapter(lstMascotas);
+        MascotasAdapter adapter = new MascotasAdapter(obtenerListaMascotas());
         adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +81,7 @@ public class MascotasFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
         recyclerView.setAdapter(adapter);
 
         return vistaMascotas;
@@ -91,14 +94,36 @@ public class MascotasFragment extends Fragment {
         navController = Navigation.findNavController(view);
     }
 
-    private void LlenarLista() {
+    private ArrayList<MascotaModel> obtenerListaMascotas() {
 
-        lstMascotas.add(new MascotaModel("Mascota 1", "Descripcion de mascota 1", R.drawable.pet, false));
-        lstMascotas.add(new MascotaModel("Mascota 2", "Descripcion de mascota 2", R.drawable.pet, true));
-        lstMascotas.add(new MascotaModel("Mascota 3", "Descripcion de mascota 3", R.drawable.pet, true));
-        lstMascotas.add(new MascotaModel("Mascota 4", "Descripcion de mascota 4", R.drawable.pet, false));
-        lstMascotas.add(new MascotaModel("Mascota 5", "Descripcion de mascota 5", R.drawable.pet, false));
-        lstMascotas.add(new MascotaModel("Mascota 6", "Descripcion de mascota 6", R.drawable.pet, true));
-        lstMascotas.add(new MascotaModel("Mascota 7", "Descripcion de mascota 7", R.drawable.pet, true));
+        ArrayList<MascotaModel> lstMascotas = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Mascotas", null);
+        MascotaModel mascotaModel = null;
+
+        if (cursor.moveToFirst()) {
+            do {
+
+                mascotaModel = new MascotaModel();
+                mascotaModel.setId(cursor.getInt(0));
+                mascotaModel.setNombre(cursor.getString(1));
+                mascotaModel.setRaza(cursor.getString(2));
+                mascotaModel.setSexo(cursor.getString(3));
+                mascotaModel.setEspecie(cursor.getString(4));
+                mascotaModel.setColor(cursor.getString(5));
+                mascotaModel.setFechaNacimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                mascotaModel.setEsterilizacion(Boolean.parseBoolean(cursor.getString(7)));
+                mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                mascotaModel.setFoto(R.drawable.pet);
+                mascotaModel.setDescripcion(mascotaModel.getRaza() + "\n" + mascotaModel.getEspecie() + "\n" + mascotaModel.getColor() + "\n" + mascotaModel.getSexo());
+
+                lstMascotas.add(mascotaModel);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return  lstMascotas;
     }
 }
