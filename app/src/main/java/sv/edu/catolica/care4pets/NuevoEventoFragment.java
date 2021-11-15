@@ -7,9 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
@@ -71,6 +73,22 @@ public class NuevoEventoFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.save_or_cancel_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.btnAceptar:
+                insertToDB();
+                onBackPressed();
+                break;
+            case R.id.btnCancelar:
+                onBackPressed();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -137,7 +155,7 @@ public class NuevoEventoFragment extends Fragment {
     private void insertToDB(){
 
         ContentValues values = new ContentValues();
-        values.put("ID_Evento",1);
+        //values.put("ID_Evento",1);
         values.put("Fecha", edtFechaEvento.getText().toString());
         values.put("Hora",edtHoraEvento.getText().toString());
         values.put("TipoEvento",spnEvento.getSelectedItem().toString());
@@ -162,6 +180,12 @@ public class NuevoEventoFragment extends Fragment {
 
     private void MostrarMensaje(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onBackPressed() {
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.popBackStack();
     }
 
 }

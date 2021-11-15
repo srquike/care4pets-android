@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,7 +63,7 @@ public class NuevoAlimentoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View vista = inflater.inflate(R.layout.fragment_nueva_mascota, container, false);
+        View vista = inflater.inflate(R.layout.fragment_nuevo_alimento, container, false);
 
         spnNombre = vista.findViewById(R.id.edtNombre);
         spnNotas = vista.findViewById(R.id.edtNotas);
@@ -84,9 +85,11 @@ public class NuevoAlimentoFragment extends Fragment {
 
         switch (item.getItemId()){
             case R.id.btnAceptar:
-
+                insertToDB();
+                onBackPressed();
                 break;
             case R.id.btnCancelar:
+                onBackPressed();
                 break;
         }
 
@@ -96,7 +99,7 @@ public class NuevoAlimentoFragment extends Fragment {
     private void insertToDB(){
 
         ContentValues values = new ContentValues();
-        values.put("ID_comida",1);
+        //values.put("ID_comida",1);
         values.put("Nombre", spnNombre.getText().toString());
         values.put("Unidad",spnUnidad.getSelectedItem().toString());
         values.put("TipoComida",spnTipoAlimento.getSelectedItem().toString());
@@ -120,6 +123,11 @@ public class NuevoAlimentoFragment extends Fragment {
 
     private void MostrarMensaje(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+    public void onBackPressed() {
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.popBackStack();
     }
 
 }

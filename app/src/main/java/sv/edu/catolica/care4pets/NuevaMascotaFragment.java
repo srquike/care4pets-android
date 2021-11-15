@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -144,6 +145,7 @@ public class NuevaMascotaFragment extends Fragment {
         switch (item.getItemId()){
             case R.id.btnAceptar:
                 insertToDB();
+                onBackPressed();
 
                 break;
             case R.id.btnCancelar:
@@ -172,11 +174,15 @@ public class NuevaMascotaFragment extends Fragment {
         values.put("Color",edtColor.getText().toString());
         values.put("FechaNaci",edtFechaNacimiento.getText().toString());
         values.put("FechaEsterilizacion",edtFechaEsterilizacion.getText().toString());
+
         if (rbSi.isChecked()){
             values.put("Esterilizacion",true);
+
         }else if(rbNo.isChecked()){
             values.put("Esterilizacion",false);
+
         }
+
 
 
         long id = db.insert("Mascotas",null,values);

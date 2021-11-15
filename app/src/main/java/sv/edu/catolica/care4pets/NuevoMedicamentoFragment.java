@@ -1,17 +1,24 @@
 package sv.edu.catolica.care4pets;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class NuevoMedicamentoFragment extends Fragment {
 
@@ -23,6 +30,9 @@ public class NuevoMedicamentoFragment extends Fragment {
 
     private EditText edtNombre,edtCantidad, edtLaboratorio,edtNotas, edtFechaVencimiento;
     private Spinner spnPresentacion, spnUnidad;
+    private Calendar calendar;
+    private DatePickerDialog datePickerDialog;
+    private ImageView imvFechaVencimiento;
 
 
     ControladorBD adminDB;
@@ -62,6 +72,22 @@ public class NuevoMedicamentoFragment extends Fragment {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.btnAceptar:
+                insertToDB();
+                onBackPressed();
+                break;
+            case R.id.btnCancelar:
+                onBackPressed();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -70,16 +96,46 @@ public class NuevoMedicamentoFragment extends Fragment {
         edtNombre = view.findViewById(R.id.txtNombre);
         edtCantidad = view.findViewById(R.id.txtCantidad);
         edtLaboratorio = view.findViewById(R.id.txtLaboratorio);
+        spnUnidad =view.findViewById(R.id.spnUnidad);
         edtFechaVencimiento = view.findViewById(R.id.edtFechaVencimiento);
+        imvFechaVencimiento = view.findViewById(R.id.imvFechaVencimiento);
+        spnPresentacion = view.findViewById(R.id.spnPresentacion);
+        edtNotas = view.findViewById(R.id.txtNotas);
+
+        imvFechaVencimiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirCalendario(edtFechaVencimiento);
+            }
+        });
 
 
         return view;
     }
 
-    private void insertToDB(){
+    private void abrirCalendario(EditText editText) {
+        calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int mes = calendar.get(Calendar.MONTH);
+        int dia = calendar.get(Calendar.DAY_OF_MONTH);
+
+        datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                if (editText.equals(edtFechaVencimiento)) {
+                    edtFechaVencimiento.setText(dayOfMonth + "/" + month + "/" + year);
+                }
+            }
+        }, year, mes, dia);
+
+        datePickerDialog.show();
+    }
+
+
+        private void insertToDB(){
 
         ContentValues values = new ContentValues();
-        values.put("ID_Medicamento",1);
+        //values.put("ID_Medicamento",1);
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Presentacion",spnPresentacion.getSelectedItem().toString());
         values.put("Cantidad",edtCantidad.getText().toString());
@@ -112,6 +168,12 @@ public class NuevoMedicamentoFragment extends Fragment {
 
     private void MostrarMensaje(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onBackPressed() {
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.popBackStack();
     }
 
 
