@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,8 +68,6 @@ public class NuevaMascotaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-
 
         adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
         db = adminDB.getWritableDatabase();
@@ -148,17 +147,17 @@ public class NuevaMascotaFragment extends Fragment {
 
                 break;
             case R.id.btnCancelar:
-                break;
-
-            case R.id.btnBuscar:
-                //BuscarMascota();
+                onBackPressed();
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
 
+    public void onBackPressed() {
 
-
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        fm.popBackStack();
     }
 
 
