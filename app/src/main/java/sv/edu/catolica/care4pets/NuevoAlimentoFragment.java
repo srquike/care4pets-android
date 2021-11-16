@@ -1,5 +1,6 @@
 package sv.edu.catolica.care4pets;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,25 +12,27 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import java.util.Calendar;
 
 public class NuevoAlimentoFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private EditText spnNombre,spnNotas;
+    private EditText edtNombre, edtNotas, edtCantidad, edtPresentacion, edtMarca, edtPrecio, edtFechaVencimiento;
     private Spinner spnTipoAlimento,spnUnidad;
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-
-    ControladorBD adminDB;
-    SQLiteDatabase db;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
+    private Calendar calendar;
+    private DatePickerDialog datePickerDialog;
+    private ImageView imvFechaVencimiento;
 
     public NuevoAlimentoFragment() {
 
@@ -53,23 +56,32 @@ public class NuevoAlimentoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getWritableDatabase();
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getWritableDatabase();
         View vista = inflater.inflate(R.layout.fragment_nuevo_alimento, container, false);
-
-        spnNombre = vista.findViewById(R.id.edtNombre);
-        spnNotas = vista.findViewById(R.id.edtNotas);
+        edtNombre = vista.findViewById(R.id.edtNombre);
+        edtNotas = vista.findViewById(R.id.edtNotas);
+        edtPresentacion = vista.findViewById(R.id.edtPresentaciónAlimento);
+        edtMarca = vista.findViewById(R.id.edtMarcaAlimento);
+        edtPrecio = vista.findViewById(R.id.edtPrecioAlimento);
+        edtFechaVencimiento = vista.findViewById(R.id.edtFechaVencimientoAlimento);
+        edtCantidad = vista.findViewById(R.id.edtCantidadAlimento);
         spnTipoAlimento = vista.findViewById(R.id.spnTipoAlimento);
-        spnUnidad = vista.findViewById(R.id.spnUnidad);
+        spnUnidad = vista.findViewById(R.id.spnUnidadAlimento);
+        imvFechaVencimiento = vista.findViewById(R.id.imvFechaVencimientoAlimento);
 
+        imvFechaVencimiento.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirCalendario();
+            }
+        });
 
 
         return vista;
@@ -99,11 +111,15 @@ public class NuevoAlimentoFragment extends Fragment {
     private void insertToDB(){
 
         ContentValues values = new ContentValues();
-        //values.put("ID_comida",1);
-        values.put("Nombre", spnNombre.getText().toString());
-        values.put("Unidad",spnUnidad.getSelectedItem().toString());
+        values.put("Nombre", edtNombre.getText().toString());
+        values.put("Unidad", spnUnidad.getSelectedItem().toString());
         values.put("TipoComida",spnTipoAlimento.getSelectedItem().toString());
-        values.put("Notas", spnNotas.getText().toString());
+        values.put("Notas", edtNotas.getText().toString());
+        values.put("Cantidad", Double.parseDouble(edtCantidad.getText().toString()));
+        values.put("Fecha_vencimiento", edtFechaVencimiento.getText().toString());
+        values.put("Presentacion", edtPresentacion.getText().toString());
+        values.put("Marca", edtMarca.getText().toString());
+        values.put("Precio", Double.parseDouble(edtPrecio.getText().toString()));
 
         long id = db.insert("Alimentos",null,values);
         if (id>0){
@@ -111,14 +127,8 @@ public class NuevoAlimentoFragment extends Fragment {
         }else{
             MostrarMensaje("Error al Ingresar Datos");
         }
-        LimpiarCasillas();
+
         db.close();
-    }
-
-    private void LimpiarCasillas() {
-        spnNombre.setText("");
-        spnNotas.setText("");
-
     }
 
     private void MostrarMensaje(String msg) {
@@ -130,4 +140,19 @@ public class NuevoAlimentoFragment extends Fragment {
         fm.popBackStack();
     }
 
+    private void abrirCalendario() {
+        calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int mes = calendar.get(Calendar.MONTH);
+        int dia = calendar.get(Calendar.DAY_OF_MONTH);
+
+        datePickerDialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                edtFechaVencimiento.setText(dayOfMonth + "/" + month + "/" + year);
+            }
+        }, year, mes, dia);
+
+        datePickerDialog.show();
+    }
 }

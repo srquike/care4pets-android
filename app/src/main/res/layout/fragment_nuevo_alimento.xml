@@ -5,62 +5,162 @@
     android:layout_height="match_parent"
     tools:context=".NuevoAlimentoFragment">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="match_parent">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nombre"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-        <EditText
-            android:id="@+id/edtNombre"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Escriba el nombre del alimento"
-            android:minHeight="48dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombre"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tipo"/>
+            <EditText
+                android:id="@+id/edtNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escriba el nombre del alimento"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-        <Spinner
-            android:id="@+id/spnTipoAlimento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/tiposAlimentos"
-            android:minHeight="48dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cantidad"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Unidad"/>
+            <EditText
+                android:id="@+id/edtCantidadAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escriba la cantidad de alimento"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
-        <Spinner
-            android:id="@+id/spnUnidad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:entries="@array/unidades"
-            android:minHeight="48dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Unidad"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Notas"/>
+            <Spinner
+                android:id="@+id/spnUnidadAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/unidades"
+                android:minHeight="48dp" />
 
-        <EditText
-            android:id="@+id/edtNotas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Escriba una nota para el alimento"
-            android:minHeight="48dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tipo"/>
 
-    </LinearLayout>
+            <Spinner
+                android:id="@+id/spnTipoAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/tiposAlimentos"
+                android:minHeight="48dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Presentación"/>
+
+            <EditText
+                android:id="@+id/edtPresentaciónAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escriba la presentación del alimento"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Marca"/>
+
+            <EditText
+                android:id="@+id/edtMarcaAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escriba la marca del alimento"
+                android:inputType="text"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Precio"/>
+
+            <EditText
+                android:id="@+id/edtPrecioAlimento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escriba el precio del alimento"
+                android:inputType="numberDecimal"
+                android:minHeight="48dp"
+                android:singleLine="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="Fecha de vencimiento" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/edtFechaVencimientoAlimento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Ingrese la fecha de vencimiento del alimento"
+                    android:inputType="date"
+                    android:minHeight="48dp"
+                    android:selectAllOnFocus="false"
+                    android:singleLine="true"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                <ImageView
+                    android:id="@+id/imvFechaVencimientoAlimento"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@android:drawable/ic_menu_my_calendar"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notas"/>
+
+            <EditText
+                android:id="@+id/edtNotas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Escriba una nota para el alimento"
+                android:inputType="textLongMessage"
+                android:minHeight="48dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </FrameLayout>

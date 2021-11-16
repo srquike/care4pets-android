@@ -61,9 +61,6 @@ public class NuevaMascotaFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getWritableDatabase();
     }
 
     @Override
@@ -77,7 +74,11 @@ public class NuevaMascotaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getWritableDatabase();
+
         View vista = inflater.inflate(R.layout.fragment_nueva_mascota, container, false);
+
 
         edtFechaNacimiento = vista.findViewById(R.id.edtFechaNacimiento);
         edtFechaEsterilizacion = vista.findViewById(R.id.edtFechaEsterilizacion);

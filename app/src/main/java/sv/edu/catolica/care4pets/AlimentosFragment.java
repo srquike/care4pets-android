@@ -1,5 +1,7 @@
 package sv.edu.catolica.care4pets;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,8 @@ import android.view.ViewGroup;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class AlimentosFragment extends Fragment {
@@ -22,10 +26,10 @@ public class AlimentosFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-
     private RecyclerView recyclerView;
-    private ArrayList<AlimentoModel> lstAlimentos;
     private NavController navController;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public AlimentosFragment() {
 
@@ -52,13 +56,12 @@ public class AlimentosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getReadableDatabase();
         View view = inflater.inflate(R.layout.fragment_alimentos, container, false);
-
-        lstAlimentos = new ArrayList<>();
         recyclerView = (RecyclerView) view.findViewById(R.id.rcrMascotas);
-
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,11 +70,7 @@ public class AlimentosFragment extends Fragment {
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        LlenarLista();
-
-        AlimentosAdapter adapter = new AlimentosAdapter(lstAlimentos);
-
+        AlimentosAdapter adapter = new AlimentosAdapter(obtenerListaAlimentos());
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -84,14 +83,33 @@ public class AlimentosFragment extends Fragment {
         navController = Navigation.findNavController(view);
     }
 
-    private void LlenarLista() {
+    private ArrayList<AlimentoModel> obtenerListaAlimentos() {
+        ArrayList<AlimentoModel> lstAlimentos = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Alimentos", null);
 
-        lstAlimentos.add(new AlimentoModel("Alimento 1", "Descripcion de alimento 1", R.drawable.petfood));
-        lstAlimentos.add(new AlimentoModel("Alimento 2", "Descripcion de alimento 2", R.drawable.petfood));
-        lstAlimentos.add(new AlimentoModel("Alimento 3", "Descripcion de alimento 3", R.drawable.petfood));
-        lstAlimentos.add(new AlimentoModel("Alimento 4", "Descripcion de alimento 4", R.drawable.petfood));
-        lstAlimentos.add(new AlimentoModel("Alimento 5", "Descripcion de alimento 5", R.drawable.petfood));
-        lstAlimentos.add(new AlimentoModel("Alimento 6", "Descripcion de alimento 6", R.drawable.petfood));
-        lstAlimentos.add(new AlimentoModel("Alimento 7", "Descripcion de alimento 7", R.drawable.petfood));
+        if (cursor.moveToFirst()) {
+            do {
+                AlimentoModel alimentoModel = new AlimentoModel();
+                alimentoModel.setId(cursor.getInt(0));
+                alimentoModel.setNombre(cursor.getString(1));
+                alimentoModel.setCantidad(cursor.getDouble(2));
+                alimentoModel.setFechaVencimiento(LocalDate.parse(cursor.getString(3), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                alimentoModel.setNotas(cursor.getString(4));
+                alimentoModel.setTipoComida(cursor.getString(5));
+                alimentoModel.setUnidad(cursor.getString(6));
+                alimentoModel.setPresentacion(cursor.getString(7));
+                alimentoModel.setMarca(cursor.getString(8));
+                alimentoModel.setPrecio(cursor.getDouble(9));
+                alimentoModel.setIcono(R.drawable.petfood);
+                alimentoModel.setDescripcion(alimentoModel.getMarca() + " - " + alimentoModel.getTipoComida() + " - " + alimentoModel.getCantidad() + " " + alimentoModel.getUnidad());
+                lstAlimentos.add(alimentoModel);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return lstAlimentos;
     }
 }
