@@ -21,14 +21,14 @@ public class ControladorBD extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Medicamentos(ID_Medicamento integer primary key autoincrement,Nombre text,dosis integer,hora_ini datetime,notas text, Presentacion text,Cantidad text,Unidad text,FechaVencimiento date,Laboratorio text)");
         db.execSQL("CREATE TABLE Alimentos(ID_comida integer primary key autoincrement,Nombre text, cantidad integer,fecha_ini date,Tomas integer,Notas text, TipoComida text, Unidad text)");
         db.execSQL("CREATE TABLE Recordatorio(ID_Recordatorio integer primary key autoincrement,Nombre text,Fecha date,notas text) ");
-        db.execSQL("CREATE TABLE Profesionales(ID_Profesionales integer primary key autoincrement,Nombre text,Apellido text,Correo text,Telefono int,Profesion text,Celular integer, Direccion text)");
+        db.execSQL("CREATE TABLE Profesionales(ID_Profesionales integer primary key autoincrement," +
+                "Nombre text, Correo text,Telefono text,Profesion text,Celular text, Direccion text)");
 
 
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int v1, int v2) {
-        //sql scrip re-estructuracion de la bd
-
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        
     }
 }

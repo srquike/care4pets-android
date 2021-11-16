@@ -1,5 +1,7 @@
 package sv.edu.catolica.care4pets;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,9 +24,10 @@ public class ProfesionalesFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-    private ArrayList<ProfesionalModel> lstProfesionales;
     private RecyclerView rcvProfesionales;
     private NavController navController;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public ProfesionalesFragment() {
 
@@ -51,12 +54,12 @@ public class ProfesionalesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getReadableDatabase();
         View view = inflater.inflate(R.layout.fragment_profesionales, container, false);
-
-        lstProfesionales = new ArrayList<>();
         rcvProfesionales = (RecyclerView) view.findViewById(R.id.rcrProfesionales);
-
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,11 +68,7 @@ public class ProfesionalesFragment extends Fragment {
         });
 
         rcvProfesionales.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        LlenarLista();
-
-        ProfesionalesAdapter adapter = new ProfesionalesAdapter(lstProfesionales);
-
+        ProfesionalesAdapter adapter = new ProfesionalesAdapter(obtenerListaProfesionales());
         rcvProfesionales.setAdapter(adapter);
 
         return view;
@@ -82,14 +81,29 @@ public class ProfesionalesFragment extends Fragment {
         navController = Navigation.findNavController(view);
     }
 
-    private void LlenarLista() {
+    public ArrayList<ProfesionalModel> obtenerListaProfesionales() {
+        ArrayList<ProfesionalModel> lstProfesionales = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Profesionales", null);
+        ProfesionalModel profesionalModel = null;
 
-        lstProfesionales.add(new ProfesionalModel("Profesional 1", "Descripcion de profesional 1", R.drawable.businessman));
-        lstProfesionales.add(new ProfesionalModel("Profesional 5", "Descripcion de profesional 5", R.drawable.businessman));
-        lstProfesionales.add(new ProfesionalModel("Profesional 6", "Descripcion de profesional 6", R.drawable.businessman));
-        lstProfesionales.add(new ProfesionalModel("Profesional 7", "Descripcion de profesional 7", R.drawable.businessman));
-        lstProfesionales.add(new ProfesionalModel("Profesional 3", "Descripcion de profesional 3", R.drawable.businessman));
-        lstProfesionales.add(new ProfesionalModel("Profesional 4", "Descripcion de profesional 4", R.drawable.businessman));
-        lstProfesionales.add(new ProfesionalModel("Profesional 2", "Descripcion de profesional 2", R.drawable.businessman));
+        if (cursor.moveToFirst()) {
+            do {
+                profesionalModel = new ProfesionalModel();
+                profesionalModel.setId(cursor.getInt(0));
+                profesionalModel.setNombre(cursor.getString(1));
+                profesionalModel.setCorreo(cursor.getString(2));
+                profesionalModel.setTelefono(cursor.getString(3));
+                profesionalModel.setProfesion(cursor.getString(4));
+                profesionalModel.setCelular(cursor.getString(5));
+                profesionalModel.setDireccion(cursor.getString(6));
+                profesionalModel.setDescripcion(profesionalModel.getProfesion() + " - " + profesionalModel.getTelefono() + " - " + profesionalModel.getDireccion());
+                profesionalModel.setIcono(R.drawable.businessman);
+
+                lstProfesionales.add(profesionalModel);
+
+            } while (cursor.moveToNext());
+        }
+
+        return lstProfesionales;
     }
 }

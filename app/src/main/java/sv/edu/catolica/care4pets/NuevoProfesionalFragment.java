@@ -23,9 +23,8 @@ public class NuevoProfesionalFragment extends Fragment {
     private String mParam2;
     private EditText edtNombre, edtTelefono, edtCelular, edtCorreo, edtDireccion;
     private Spinner spnProfesion;
-
-    ControladorBD adminDB;
-    SQLiteDatabase db;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public NuevoProfesionalFragment() {
 
@@ -49,10 +48,6 @@ public class NuevoProfesionalFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getWritableDatabase();
-
     }
 
     @Override
@@ -79,6 +74,9 @@ public class NuevoProfesionalFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getWritableDatabase();
         View view = inflater.inflate(R.layout.fragment_nuevo_profesional, container, false);
 
         edtNombre = view.findViewById(R.id.txtNombre);
@@ -95,7 +93,6 @@ public class NuevoProfesionalFragment extends Fragment {
     private void insertToDB(){
 
         ContentValues values = new ContentValues();
-        values.put("ID_Profesionales",1);
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Profesion", spnProfesion.getSelectedItem().toString());
         values.put("Telefono",edtTelefono.getText().toString());
@@ -110,16 +107,7 @@ public class NuevoProfesionalFragment extends Fragment {
         }else{
             MostrarMensaje("Error al Ingresar Datos");
         }
-        LimpiarCasillas();
         db.close();
-    }
-
-    private void LimpiarCasillas() {
-        edtNombre.setText("");
-        edtTelefono.setText("");
-        edtCorreo.setText("");
-        edtCelular.setText("");
-        edtDireccion.setText("");
     }
 
     private void MostrarMensaje(String msg) {

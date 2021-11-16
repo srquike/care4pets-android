@@ -2,14 +2,65 @@ package sv.edu.catolica.care4pets;
 
 public class ProfesionalModel {
 
-    String nombre;
-    String descripcion;
-    int icono;
+    private String nombre;
+    private String descripcion;
+    private int icono;
+    private int id;
+    private String correo;
+    private String telefono;
+    private String celular;
+    private String direccion;
+    private String profesion;
 
-    public ProfesionalModel(String nombre, String descripcion, int icono) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.icono = icono;
+    public ProfesionalModel() {
+    }
+
+    public String getProfesion() {
+        return profesion;
+    }
+
+    public void setProfesion(String profesion) {
+        this.profesion = profesion;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 
     public String getNombre() {
