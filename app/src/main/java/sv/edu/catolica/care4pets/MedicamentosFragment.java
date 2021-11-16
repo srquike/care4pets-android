@@ -1,5 +1,7 @@
 package sv.edu.catolica.care4pets;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +16,8 @@ import android.view.ViewGroup;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class MedicamentosFragment extends Fragment {
@@ -21,10 +25,10 @@ public class MedicamentosFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-
-    private ArrayList<MedicamentoModel> lstMedicamento;
     private RecyclerView rcvMedicamentos;
     private NavController navController;
+    private ControladorBD adminDB;
+    private SQLiteDatabase db;
 
     public MedicamentosFragment() {
 
@@ -51,13 +55,12 @@ public class MedicamentosFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        db = adminDB.getReadableDatabase();
         View view = inflater.inflate(R.layout.fragment_medicamentos, container, false);
-
-        lstMedicamento = new ArrayList<>();
         rcvMedicamentos = (RecyclerView) view.findViewById(R.id.rcvMedicamentos);
-
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,11 +69,7 @@ public class MedicamentosFragment extends Fragment {
         });
 
         rcvMedicamentos.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        LlenarLista();
-
-        MedicamentosAdapter adapter = new MedicamentosAdapter(lstMedicamento);
-
+        MedicamentosAdapter adapter = new MedicamentosAdapter(obtenerListaMedicamentos());
         rcvMedicamentos.setAdapter(adapter);
 
         return view;
@@ -82,14 +81,33 @@ public class MedicamentosFragment extends Fragment {
         navController = Navigation.findNavController(view);
     }
 
-    private void LlenarLista() {
+    private ArrayList<MedicamentoModel> obtenerListaMedicamentos() {
+        ArrayList<MedicamentoModel> lstMedicamentos = new ArrayList<>();
+        Cursor cursor = db.rawQuery("SELECT * FROM Medicamentos", null);
+        MedicamentoModel medicamentoModel = null;
 
-        lstMedicamento.add(new MedicamentoModel("Medicamento 1", "Descripcion de medicamento 1", R.drawable.first_aid));
-        lstMedicamento.add(new MedicamentoModel("Medicamento 5", "Descripcion de medicamento 5", R.drawable.first_aid));
-        lstMedicamento.add(new MedicamentoModel("Medicamento 6", "Descripcion de medicamento 6", R.drawable.first_aid));
-        lstMedicamento.add(new MedicamentoModel("Medicamento 7", "Descripcion de medicamento 7", R.drawable.first_aid));
-        lstMedicamento.add(new MedicamentoModel("Medicamento 3", "Descripcion de medicamento 3", R.drawable.first_aid));
-        lstMedicamento.add(new MedicamentoModel("Medicamento 4", "Descripcion de medicamento 4", R.drawable.first_aid));
-        lstMedicamento.add(new MedicamentoModel("Medicamento 2", "Descripcion de medicamento 2", R.drawable.first_aid));
+        if (cursor.moveToFirst()) {
+            do {
+                medicamentoModel = new MedicamentoModel();
+                medicamentoModel.setId(cursor.getInt(0));
+                medicamentoModel.setNombre(cursor.getString(1));
+                medicamentoModel.setNotas(cursor.getString(2));
+                medicamentoModel.setPresentacion(cursor.getString(3));
+                medicamentoModel.setCantidad(Double.parseDouble(cursor.getString(4)));
+                medicamentoModel.setUnidad(cursor.getString(5));
+                medicamentoModel.setFechaVencimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                medicamentoModel.setLaboratorio(cursor.getString(7));
+                medicamentoModel.setIcono(R.drawable.first_aid);
+                medicamentoModel.setDescripcion(medicamentoModel.getPresentacion() + " - " + medicamentoModel.getCantidad() + " " + medicamentoModel.getUnidad() + " - " + medicamentoModel.getFechaVencimiento());
+
+                lstMedicamentos.add(medicamentoModel);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return  lstMedicamentos;
     }
 }

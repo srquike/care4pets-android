@@ -14,18 +14,22 @@ public class ControladorBD extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table Roles(ID_Rol integer primary key autoincrement, Nombre text)");
-        db.execSQL("CREATE TABLE Usuario(ID_User integer primary key autoincrement, Nombre text, Apellido text, correo text, contraseña text)");
-        db.execSQL("CREATE TABLE Mascotas(ID_pet integer primary key autoincrement,Nombre text, Raza text,Sexo text,Especie text, Color text,FechaNaci date,Esterilizacion boolean,FechaEsterilizacion date)");
-        db.execSQL("CREATE TABLE Evento(ID_Evento integer primary key autoincrement,Nombre text, Fecha date,Hora datetime, TipoEvento text,Descripcion text)");
-        db.execSQL("CREATE TABLE Medicamentos(ID_Medicamento integer primary key autoincrement,Nombre text,dosis integer,hora_ini datetime,notas text, Presentacion text,Cantidad text,Unidad text,FechaVencimiento date,Laboratorio text)");
+        db.execSQL("create table Roles(ID_Rol integer primary key autoincrement, " +
+                "Nombre text)");
+        db.execSQL("CREATE TABLE Usuario(ID_User integer primary key autoincrement, " +
+                "Nombre text, Apellido text, correo text, contraseña text)");
+        db.execSQL("CREATE TABLE Mascotas(ID_pet integer primary key autoincrement," +
+                "Nombre text, Raza text,Sexo text,Especie text, Color text,FechaNaci date,Esterilizacion boolean,FechaEsterilizacion date)");
+        db.execSQL("CREATE TABLE Evento(ID_Evento integer primary key autoincrement," +
+                "Nombre text, Fecha date,Hora datetime, TipoEvento text,Descripcion text)");
+        db.execSQL("CREATE TABLE Medicamentos(ID_Medicamento integer primary key autoincrement," +
+                "Nombre text, notas text, Presentacion text, Cantidad double, Unidad text, FechaVencimiento date, Laboratorio text)");
         db.execSQL("CREATE TABLE Alimentos(ID_comida integer primary key autoincrement," +
                 "Nombre text, Cantidad double, Fecha_vencimiento date, Notas text, TipoComida text, Unidad text, Presentacion text, Marca text, Precio double)");
-        db.execSQL("CREATE TABLE Recordatorio(ID_Recordatorio integer primary key autoincrement,Nombre text,Fecha date,notas text) ");
+        db.execSQL("CREATE TABLE Recordatorio(ID_Recordatorio integer primary key autoincrement," +
+                "Nombre text,Fecha date,notas text) ");
         db.execSQL("CREATE TABLE Profesionales(ID_Profesionales integer primary key autoincrement," +
                 "Nombre text, Correo text,Telefono text,Profesion text,Celular text, Direccion text)");
-
-
     }
 
     @Override
