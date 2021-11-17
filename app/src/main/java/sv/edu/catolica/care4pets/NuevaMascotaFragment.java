@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -94,6 +95,26 @@ public class NuevaMascotaFragment extends Fragment {
         rbSi = vista.findViewById(R.id.rbSi);
         rbNo = vista.findViewById(R.id.rbNo);
 
+        rbSi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    edtFechaEsterilizacion.setEnabled(true);
+                    imvFechaEsterilizacion.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        rbNo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    edtFechaEsterilizacion.setEnabled(false);
+                    imvFechaEsterilizacion.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
 
         imvFechaNacimiento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +194,6 @@ public class NuevaMascotaFragment extends Fragment {
 
         }else if(rbNo.isChecked()){
             values.put("Esterilizacion",false);
-
         }
 
 

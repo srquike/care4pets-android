@@ -2,18 +2,20 @@ package sv.edu.catolica.care4pets;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHolderMascotas> implements View.OnClickListener {
+public class MascotasAdapter
+        extends RecyclerView.Adapter<MascotasAdapter.ViewHolderMascotas> {
 
-    private ArrayList<MascotaModel> lstMasctoas;
-    private View.OnClickListener onClickListener;
+    public ArrayList<MascotaModel> lstMasctoas;
 
     public MascotasAdapter(ArrayList<MascotaModel> lstMasctoas) {
         this.lstMasctoas = lstMasctoas;
@@ -25,13 +27,8 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHo
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.mascota_item, null, false);
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
-        view.setOnClickListener(this);
 
         return new ViewHolderMascotas(view);
-    }
-
-    public void setOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -52,17 +49,11 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHo
         return lstMasctoas.size();
     }
 
-    @Override
-    public void onClick(View v) {
-        if (onClickListener != null) {
-            onClickListener.onClick(v);
-        }
-    }
-
-    public class ViewHolderMascotas extends RecyclerView.ViewHolder {
+    public class ViewHolderMascotas extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         ImageView foto, notificacion;
         TextView nombre, descripcion;
+        LinearLayout lytMascota;
 
         public ViewHolderMascotas(@NonNull View itemView) {
             super(itemView);
@@ -71,6 +62,19 @@ public class MascotasAdapter extends RecyclerView.Adapter<MascotasAdapter.ViewHo
             notificacion = itemView.findViewById(R.id.imvNotificacion);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
+            lytMascota = itemView.findViewById(R.id.lytMascota);
+            lytMascota.setOnCreateContextMenuListener(this);
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Opciones");
+            menu.add(this.getAdapterPosition(), 121,0,"Eliminar");
+        }
+    }
+
+    public void eliminarElementoSeleccionado(int posicion) {
+        lstMasctoas.remove(posicion);
+        notifyDataSetChanged();
     }
 }
