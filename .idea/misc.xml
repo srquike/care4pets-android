@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/alimento_item.xml" value="0.2015625" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/app_bar_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/content_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/evento_item.xml" value="0.36666666666666664" />
@@ -13,6 +14,8 @@
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/fragment_nuevo_medicamento.xml" value="0.36102564102564105" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/fragment_nuevo_profesional.xml" value="0.36102564102564105" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/mascota_item.xml" value="0.36102564102564105" />
+        <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/medicamento_item.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/layout/profesional_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/menu/activity_main_drawer.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Obito/AndroidStudioProjects/Care4Pets/app/src/main/res/menu/main.xml" value="0.36666666666666664" />

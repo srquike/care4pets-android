@@ -10,8 +10,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -28,6 +30,7 @@ public class ProfesionalesFragment extends Fragment {
     private NavController navController;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
+    private ProfesionalesAdapter adapter;
 
     public ProfesionalesFragment() {
 
@@ -55,7 +58,7 @@ public class ProfesionalesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getReadableDatabase();
+
         View view = inflater.inflate(R.layout.fragment_profesionales, container, false);
         rcvProfesionales = (RecyclerView) view.findViewById(R.id.rcrProfesionales);
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -68,8 +71,9 @@ public class ProfesionalesFragment extends Fragment {
         });
 
         rcvProfesionales.setLayoutManager(new LinearLayoutManager(getContext()));
-        ProfesionalesAdapter adapter = new ProfesionalesAdapter(obtenerListaProfesionales());
+        adapter = new ProfesionalesAdapter(obtenerListaProfesionales());
         rcvProfesionales.setAdapter(adapter);
+
 
         return view;
     }
@@ -82,6 +86,7 @@ public class ProfesionalesFragment extends Fragment {
     }
 
     public ArrayList<ProfesionalModel> obtenerListaProfesionales() {
+        db = adminDB.getReadableDatabase();
         ArrayList<ProfesionalModel> lstProfesionales = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM Profesionales", null);
         ProfesionalModel profesionalModel = null;
@@ -103,7 +108,37 @@ public class ProfesionalesFragment extends Fragment {
 
             } while (cursor.moveToNext());
         }
+        cursor.close();
+        db.close();
 
         return lstProfesionales;
+    }
+
+    private void eliminarProfesional(int profesionalId, int posicion) {
+        db = adminDB.getWritableDatabase();
+        int registrosEliminados = db.delete("Profesionales", "ID_Profesionales = " + profesionalId, null);
+
+        if (registrosEliminados > 0) {
+            adapter.eliminarElementoSeleccionado(posicion);
+        } else {
+            MostrarMensaje("No se pudo eliminar");
+        }
+
+        db.close();
+    }
+
+    private void MostrarMensaje(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 121:
+                ProfesionalModel profesionalModel = adapter.lstProfesionales.get(item.getGroupId());
+                eliminarProfesional(profesionalModel.getId(), item.getGroupId());
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }

@@ -2,20 +2,21 @@ package sv.edu.catolica.care4pets;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdapter.ProfesionalesViewHolder>  {
 
-    private ArrayList<ProfesionalModel> lstProfesionales;
+    ArrayList<ProfesionalModel> lstProfesionales;
 
-    public ProfesionalesAdapter(ArrayList<ProfesionalModel> lstProfesionales) {
-        this.lstProfesionales = lstProfesionales;
+    public ProfesionalesAdapter(ArrayList<ProfesionalModel> lstProfesionales) { this.lstProfesionales = lstProfesionales;
     }
 
     @NonNull
@@ -42,10 +43,16 @@ public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdap
         return lstProfesionales.size();
     }
 
-    public class ProfesionalesViewHolder extends RecyclerView.ViewHolder {
+    public void eliminarElementoSeleccionado(int posicion) {
+        lstProfesionales.remove(posicion);
+        notifyDataSetChanged();
+    }
+
+    public class ProfesionalesViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         ImageView icono;
         TextView nombre, descripcion;
+        LinearLayout lytProfesional;
 
         public ProfesionalesViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -53,6 +60,15 @@ public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdap
             icono = itemView.findViewById(R.id.imvIcono);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
+            lytProfesional = itemView.findViewById(R.id.lytProfesional);
+            lytProfesional.setOnCreateContextMenuListener(this);
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Opciones");
+            menu.add(this.getAdapterPosition(), 121,0,"Eliminar");
+        }
+
     }
 }

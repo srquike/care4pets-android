@@ -10,8 +10,10 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -29,6 +31,7 @@ public class MedicamentosFragment extends Fragment {
     private NavController navController;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
+    private MedicamentosAdapter adapter;
 
     public MedicamentosFragment() {
 
@@ -56,7 +59,7 @@ public class MedicamentosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getReadableDatabase();
+
         View view = inflater.inflate(R.layout.fragment_medicamentos, container, false);
         rcvMedicamentos = (RecyclerView) view.findViewById(R.id.rcvMedicamentos);
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
@@ -69,7 +72,7 @@ public class MedicamentosFragment extends Fragment {
         });
 
         rcvMedicamentos.setLayoutManager(new LinearLayoutManager(getContext()));
-        MedicamentosAdapter adapter = new MedicamentosAdapter(obtenerListaMedicamentos());
+        adapter = new MedicamentosAdapter(obtenerListaMedicamentos());
         rcvMedicamentos.setAdapter(adapter);
 
         return view;
@@ -82,6 +85,7 @@ public class MedicamentosFragment extends Fragment {
     }
 
     private ArrayList<MedicamentoModel> obtenerListaMedicamentos() {
+        db = adminDB.getReadableDatabase();
         ArrayList<MedicamentoModel> lstMedicamentos = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM Medicamentos", null);
         MedicamentoModel medicamentoModel = null;
@@ -109,5 +113,32 @@ public class MedicamentosFragment extends Fragment {
         db.close();
 
         return  lstMedicamentos;
+    }
+    private void MostrarMensaje(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private void eliminarMedicamento(int medicamentoId, int posicion){
+        db = adminDB.getWritableDatabase();
+        int registrosEliminados = db.delete("Medicamentos", "ID_Medicamento = " + medicamentoId, null);
+
+        if (registrosEliminados > 0) {
+            adapter.eliminarElementoSeleccionado(posicion);
+        } else {
+            MostrarMensaje("No se pudo eliminar");
+        }
+
+        db.close();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 121:
+                MedicamentoModel medicamentoModel= adapter.lstMedicamentos.get(item.getGroupId());
+                eliminarMedicamento(medicamentoModel.getId(),item.getGroupId());
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }

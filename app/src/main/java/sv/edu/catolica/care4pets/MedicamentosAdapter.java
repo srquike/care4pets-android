@@ -2,20 +2,21 @@ package sv.edu.catolica.care4pets;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapter.MedicamentoViewHolder> {
 
-    private ArrayList<MedicamentoModel> lstMedicamentos;
+    ArrayList<MedicamentoModel> lstMedicamentos;
 
-    public MedicamentosAdapter(ArrayList<MedicamentoModel> lstMedicamentos) {
-        this.lstMedicamentos = lstMedicamentos;
+    public MedicamentosAdapter(ArrayList<MedicamentoModel> lstMedicamentos) { this.lstMedicamentos = lstMedicamentos;
     }
 
     @NonNull
@@ -42,10 +43,16 @@ public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapte
         return lstMedicamentos.size();
     }
 
-    public class MedicamentoViewHolder extends RecyclerView.ViewHolder {
+    public void eliminarElementoSeleccionado(int posicion) {
+        lstMedicamentos.remove(posicion);
+        notifyDataSetChanged();
+    }
+
+    public class MedicamentoViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
 
         ImageView icono;
         TextView nombre, descripcion;
+        LinearLayout lytMedicamento;
 
         public MedicamentoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -53,6 +60,14 @@ public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapte
             icono = itemView.findViewById(R.id.imvIcono);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
+            lytMedicamento = itemView.findViewById(R.id.lytMedicamento);
+            lytMedicamento.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Opciones");
+            menu.add(this.getAdapterPosition(), 121,0,"Eliminar");
         }
     }
 }
