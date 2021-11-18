@@ -1,5 +1,7 @@
 package sv.edu.catolica.care4pets;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -106,7 +108,7 @@ public class MascotasFragment extends Fragment {
                 mascotaModel.setEsterilizacion(Boolean.parseBoolean(cursor.getString(7)));
                 mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
                 mascotaModel.setFoto(R.drawable.pet);
-                mascotaModel.setDescripcion(mascotaModel.getRaza() + "\n" + mascotaModel.getEspecie() + "\n" + mascotaModel.getColor() + "\n" + mascotaModel.getSexo());
+                mascotaModel.setDescripcion(mascotaModel.getRaza() + " - " + mascotaModel.getEspecie() + " - " + mascotaModel.getColor() + " - " + mascotaModel.getSexo());
 
                 lstMascotas.add(mascotaModel);
 
@@ -125,7 +127,22 @@ public class MascotasFragment extends Fragment {
         switch (item.getItemId()) {
             case 121:
                 MascotaModel mascotaModel = adapter.lstMasctoas.get(item.getGroupId());
-                eliminarMascota(mascotaModel.getId(), item.getGroupId());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Confirmar eliminación");
+                builder.setMessage("¿Desea eliminar a " + mascotaModel.getNombre() + " de la lista de mascotas?");
+
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        eliminarMascota(mascotaModel.getId(), item.getGroupId());
+                    }
+                });
+
+                builder.setNegativeButton("No", null);
+                builder.create();
+                builder.show();
+
                 break;
         }
 

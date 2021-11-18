@@ -67,8 +67,6 @@ public class NuevaMascotaFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.save_or_cancel_menu, menu);
-
-
     }
 
     @Override
