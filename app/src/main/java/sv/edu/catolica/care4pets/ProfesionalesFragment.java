@@ -1,5 +1,7 @@
 package sv.edu.catolica.care4pets;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -136,7 +138,21 @@ public class ProfesionalesFragment extends Fragment {
         switch (item.getItemId()) {
             case 121:
                 ProfesionalModel profesionalModel = adapter.lstProfesionales.get(item.getGroupId());
-                eliminarProfesional(profesionalModel.getId(), item.getGroupId());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Confirmar eliminación");
+                builder.setMessage("¿Desea eliminar a " + profesionalModel.getNombre() + " de la lista de Profesionales?");
+
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        eliminarProfesional(profesionalModel.getId(), item.getGroupId());
+                    }
+                });
+                builder.setNegativeButton("No", null);
+                builder.create();
+                builder.show();
+
                 break;
         }
         return super.onContextItemSelected(item);

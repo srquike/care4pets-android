@@ -141,7 +141,22 @@ public class AgendaFragment extends Fragment {
             case 121:
                 //MensajeConfirmacion();
                 EventoModel eventoModel = adapter.lstEventos.get(item.getGroupId());
-                eliminarEvento(eventoModel.getId(), item.getGroupId());
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Confirmar eliminación");
+                builder.setMessage("¿Desea eliminar a " + eventoModel.getNombre() + " de la lista de Eventos?");
+
+                builder.setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        eliminarEvento(eventoModel.getId(), item.getGroupId());
+                    }
+                });
+
+                builder.setNegativeButton("No", null);
+                builder.create();
+                builder.show();
+
                 break;
         }
 
