@@ -9,6 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,13 +25,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class MascotasFragment extends Fragment {
+public class MascotasFragment extends Fragment implements MascotasAdapter.OnMascotaListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
-    private RecyclerView recyclerView;
+    private RecyclerView rcvMascotas;
     private NavController navController;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
@@ -64,10 +66,10 @@ public class MascotasFragment extends Fragment {
         adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
 
         View vistaMascotas = inflater.inflate(R.layout.fragment_mascotas, container, false);
-        recyclerView = (RecyclerView) vistaMascotas.findViewById(R.id.rcrMascotas);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        FloatingActionButton floatingActionButton = (FloatingActionButton) vistaMascotas.findViewById(R.id.fab);
+        rcvMascotas = (RecyclerView) vistaMascotas.findViewById(R.id.rcrMascotas);
+        rcvMascotas.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        FloatingActionButton floatingActionButton = (FloatingActionButton) vistaMascotas.findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,8 +77,9 @@ public class MascotasFragment extends Fragment {
             }
         });
 
-        adapter = new MascotasAdapter(obtenerListaMascotas());
-        recyclerView.setAdapter(adapter);
+        adapter = new MascotasAdapter(obtenerListaMascotas(), this);
+
+        rcvMascotas.setAdapter(adapter);
 
         return vistaMascotas;
     }
@@ -96,7 +99,6 @@ public class MascotasFragment extends Fragment {
 
         if (cursor.moveToFirst()) {
             do {
-
                 mascotaModel = new MascotaModel();
                 mascotaModel.setId(cursor.getInt(0));
                 mascotaModel.setNombre(cursor.getString(1));
@@ -105,7 +107,7 @@ public class MascotasFragment extends Fragment {
                 mascotaModel.setEspecie(cursor.getString(4));
                 mascotaModel.setColor(cursor.getString(5));
                 mascotaModel.setFechaNacimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
-                mascotaModel.setEsterilizacion(Boolean.parseBoolean(cursor.getString(7)));
+                mascotaModel.setEsterilizacion(cursor.getString(7));
                 mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
                 mascotaModel.setFoto(R.drawable.pet);
                 mascotaModel.setDescripcion(mascotaModel.getRaza() + " - " + mascotaModel.getEspecie() + " - " + mascotaModel.getColor() + " - " + mascotaModel.getSexo());
@@ -126,7 +128,7 @@ public class MascotasFragment extends Fragment {
 
         switch (item.getItemId()) {
             case 121:
-                MascotaModel mascotaModel = adapter.lstMasctoas.get(item.getGroupId());
+                MascotaModel mascotaModel = adapter.lstMascota.get(item.getGroupId());
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle("Confirmar eliminación");
@@ -164,5 +166,12 @@ public class MascotasFragment extends Fragment {
 
     private void MostrarMensaje(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onMascotaClick(int posicion) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("Id", adapter.lstMascota.get(posicion).getId());
+        navController.navigate(R.id.nuevaMascotaFragment, bundle);
     }
 }

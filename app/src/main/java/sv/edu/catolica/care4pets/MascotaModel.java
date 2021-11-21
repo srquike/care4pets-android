@@ -15,7 +15,7 @@ public class MascotaModel {
     private String color;
     private LocalDate fechaNacimiento;
     private LocalDate fechaEsterilizacion;
-    private Boolean esterilizacion;
+    private String esterilizacion;
 
     public String getNombre() {
         return nombre;
@@ -105,11 +105,11 @@ public class MascotaModel {
         this.fechaEsterilizacion = fechaEsterilizacion;
     }
 
-    public Boolean getEsterilizacion() {
+    public String getEsterilizacion() {
         return esterilizacion;
     }
 
-    public void setEsterilizacion(Boolean esterilizacion) {
+    public void setEsterilizacion(String esterilizacion) {
         this.esterilizacion = esterilizacion;
     }
 }

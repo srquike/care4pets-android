@@ -9,13 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Care4Pets">
-
+        <activity
+            android:name=".MascotaActivity"
+            android:exported="false"/>
         <activity
             android:name=".PerfilMascotaActivity"
             android:exported="false"
             android:label="Perfil"
-            android:theme="@style/Theme.AppCompat.Light"/>
-
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -27,7 +28,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

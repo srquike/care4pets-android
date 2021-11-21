@@ -51,6 +51,9 @@
         <action
             android:id="@+id/action_mascotasFragment_to_nuevaMascotaFragment"
             app:destination="@id/nuevaMascotaFragment" />
+        <action
+            android:id="@+id/action_mascotasFragment_to_mascotaActivity"
+            app:destination="@id/mascotaActivity" />
     </fragment>
     <fragment
         android:id="@+id/nuevaMascotaFragment"
@@ -145,4 +148,8 @@
             android:id="@+id/action_nuevoMedicamentoFragment_to_medicamentosFragment"
             app:destination="@id/medicamentosFragment" />
     </fragment>
+    <activity
+        android:id="@+id/mascotaActivity"
+        android:name="sv.edu.catolica.care4pets.MascotaActivity"
+        android:label="MascotaActivity" />
 </navigation>

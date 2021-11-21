@@ -22,6 +22,9 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class NuevaMascotaFragment extends Fragment {
@@ -35,9 +38,10 @@ public class NuevaMascotaFragment extends Fragment {
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
     private Spinner spnSexo, spnEspecie;
-    private RadioButton rbSi,rbNo;
+    private RadioButton rbSi, rbNo;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
+    private int mascotaId;
 
     public NuevaMascotaFragment() {
 
@@ -66,25 +70,24 @@ public class NuevaMascotaFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        if (getArguments() == null) {
+            inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        } else {
+            inflater.inflate(R.menu.save_changes_menu, menu);
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
-        db = adminDB.getWritableDatabase();
-
         View vista = inflater.inflate(R.layout.fragment_nueva_mascota, container, false);
-
-
+        Bundle bundle = getArguments();
+        adminDB = new ControladorBD(getContext(), "DBCare4Pets", null, 1);
         edtFechaNacimiento = vista.findViewById(R.id.edtFechaNacimiento);
         edtFechaEsterilizacion = vista.findViewById(R.id.edtFechaEsterilizacion);
         imvFechaNacimiento = vista.findViewById(R.id.imVFechaNacimiento);
         imvFechaEsterilizacion = vista.findViewById(R.id.imVFechaEsterilizacion);
-
-        //aqui se inician las variables
         edtNombre = vista.findViewById(R.id.txtNombre);
         spnSexo = vista.findViewById(R.id.spnSexo);
         spnEspecie = vista.findViewById(R.id.spnEspecie);
@@ -113,7 +116,6 @@ public class NuevaMascotaFragment extends Fragment {
             }
         });
 
-
         imvFechaNacimiento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +130,59 @@ public class NuevaMascotaFragment extends Fragment {
             }
         });
 
+        llenarCampos(bundle);
+
         return vista;
+    }
+
+    private void llenarCampos(Bundle bundle) {
+        if (bundle != null) {
+            mascotaId = bundle.getInt("Id");
+            MascotaModel mascotaModel = obtenerMascotaPorId(mascotaId);
+
+            if (mascotaModel != null) {
+                edtNombre.setText(mascotaModel.getNombre());
+                spnSexo.setSelection(Arrays.asList(getResources().getStringArray(R.array.sexos)).indexOf(mascotaModel.getSexo()));
+                spnEspecie.setSelection(Arrays.asList(getResources().getStringArray(R.array.especies)).indexOf(mascotaModel.getEspecie()));
+                edtRaza.setText(mascotaModel.getRaza());
+                edtColor.setText(mascotaModel.getColor());
+                edtFechaNacimiento.setText(mascotaModel.getFechaNacimiento().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+
+                if (mascotaModel.getEsterilizacion().equals("true")) {
+                    rbSi.setChecked(true);
+                } else {
+                    rbNo.setChecked(true);
+                }
+
+                edtFechaEsterilizacion.setText(mascotaModel.getFechaEsterilizacion().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.getSupportActionBar().setTitle(mascotaModel.getNombre());
+            }
+        }
+    }
+
+    private MascotaModel obtenerMascotaPorId(int id) {
+        db = adminDB.getReadableDatabase();
+        MascotaModel mascotaModel = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM Mascotas WHERE ID_pet = " + id + " LIMIT 1", null);
+
+        if (cursor.moveToFirst()) {
+            mascotaModel = new MascotaModel();
+            mascotaModel.setId(cursor.getInt(0));
+            mascotaModel.setNombre(cursor.getString(1));
+            mascotaModel.setRaza(cursor.getString(2));
+            mascotaModel.setSexo(cursor.getString(3));
+            mascotaModel.setEspecie(cursor.getString(4));
+            mascotaModel.setColor(cursor.getString(5));
+            mascotaModel.setFechaNacimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            mascotaModel.setEsterilizacion(cursor.getString(7));
+            mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            mascotaModel.setFoto(R.drawable.pet);
+            mascotaModel.setDescripcion(mascotaModel.getRaza() + " - " + mascotaModel.getEspecie() + " - " + mascotaModel.getColor() + " - " + mascotaModel.getSexo());
+        }
+
+        return mascotaModel;
     }
 
     private void abrirCalendario(EditText editText) {
@@ -142,7 +196,7 @@ public class NuevaMascotaFragment extends Fragment {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 if (editText.equals(edtFechaNacimiento)) {
                     edtFechaNacimiento.setText(dayOfMonth + "/" + month + "/" + year);
-                } else if (editText.equals((edtFechaEsterilizacion))){
+                } else if (editText.equals((edtFechaEsterilizacion))) {
                     edtFechaEsterilizacion.setText(dayOfMonth + "/" + month + "/" + year);
                 }
             }
@@ -154,7 +208,7 @@ public class NuevaMascotaFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.btnAceptar:
                 insertToDB();
                 onBackPressed();
@@ -163,43 +217,43 @@ public class NuevaMascotaFragment extends Fragment {
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
+            case R.id.btnGuardarCambios:
+                editarMascota(mascotaId);
+                onBackPressed();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     public void onBackPressed() {
-
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }
 
-
-    private void insertToDB(){
-
+    private void insertToDB() {
+        db = adminDB.getWritableDatabase();
         ContentValues values = new ContentValues();
-        //values.put("ID_pet",5);
         values.put("Nombre", edtNombre.getText().toString());
-        values.put("Raza",edtRaza.getText().toString());
-        values.put("Sexo",spnSexo.getSelectedItem().toString());
-        values.put("Especie",spnEspecie.getSelectedItem().toString());
-        values.put("Color",edtColor.getText().toString());
-        values.put("FechaNaci",edtFechaNacimiento.getText().toString());
-        values.put("FechaEsterilizacion",edtFechaEsterilizacion.getText().toString());
+        values.put("Raza", edtRaza.getText().toString());
+        values.put("Sexo", spnSexo.getSelectedItem().toString());
+        values.put("Especie", spnEspecie.getSelectedItem().toString());
+        values.put("Color", edtColor.getText().toString());
+        values.put("FechaNaci", edtFechaNacimiento.getText().toString());
+        values.put("FechaEsterilizacion", edtFechaEsterilizacion.getText().toString());
 
-        if (rbSi.isChecked()){
-            values.put("Esterilizacion",true);
+        if (rbSi.isChecked()) {
+            values.put("Esterilizacion", "true");
 
-        }else if(rbNo.isChecked()){
-            values.put("Esterilizacion",false);
+        } else if (rbNo.isChecked()) {
+            values.put("Esterilizacion", "false");
         }
 
+        long id = db.insert("Mascotas", null, values);
 
-
-        long id = db.insert("Mascotas",null,values);
-        if (id>0){
+        if (id > 0) {
             MostrarMensaje("Mascota Agregada");
-        }else{
+        } else {
             MostrarMensaje("Error al Ingresar Datos");
         }
 
@@ -210,19 +264,33 @@ public class NuevaMascotaFragment extends Fragment {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    /*public void BuscarMascota(){
+    private void editarMascota(int id) {
         db = adminDB.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        //String codMascota = edtNombre.getText().toString();
-        String sql ="SELECT * FROM Mascotas";
-        Cursor fila = db.rawQuery(sql,null);
-        if (fila.moveToFirst()){
-            edtNombre.setText(fila.getString(0));
-        }else {
-            MostrarMensaje("Error");
+        values.put("Nombre", edtNombre.getText().toString());
+        values.put("Raza", edtRaza.getText().toString());
+        values.put("Sexo", spnSexo.getSelectedItem().toString());
+        values.put("Especie", spnEspecie.getSelectedItem().toString());
+        values.put("Color", edtColor.getText().toString());
+        values.put("FechaNaci", edtFechaNacimiento.getText().toString());
+        values.put("FechaEsterilizacion", edtFechaEsterilizacion.getText().toString());
+
+        if (rbSi.isChecked()) {
+            values.put("Esterilizacion", "true");
+
+        } else if (rbNo.isChecked()) {
+            values.put("Esterilizacion", "false");
         }
-    }*/
 
+        long resultado = db.update("Mascotas", values, "ID_pet = " + id, null);
 
+        if (resultado > 0) {
+            MostrarMensaje("Se modificarón los datos");
+        } else {
+            MostrarMensaje("Error al modificar los datos");
+        }
 
+        db.close();
+    }
 }
