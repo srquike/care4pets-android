@@ -9,7 +9,7 @@
             android:id="@+id/nav_home"
             android:title="@string/inicio" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_MiCuenta"
             android:title="Mi Cuenta" />
         <item
             android:id="@+id/nav_ajustes"

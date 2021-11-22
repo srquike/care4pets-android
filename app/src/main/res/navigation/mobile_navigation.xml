@@ -30,17 +30,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="sv.edu.catolica.care4pets.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="sv.edu.catolica.care4pets.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
-    <fragment
         android:id="@+id/mascotasFragment"
         android:name="sv.edu.catolica.care4pets.MascotasFragment"
         android:label="Mis mascotas"
@@ -51,9 +40,6 @@
         <action
             android:id="@+id/action_mascotasFragment_to_nuevaMascotaFragment"
             app:destination="@id/nuevaMascotaFragment" />
-        <action
-            android:id="@+id/action_mascotasFragment_to_mascotaActivity"
-            app:destination="@id/mascotaActivity" />
     </fragment>
     <fragment
         android:id="@+id/nuevaMascotaFragment"
@@ -62,7 +48,8 @@
         tools:layout="@layout/fragment_nueva_mascota" >
         <action
             android:id="@+id/action_nuevaMascotaFragment_to_mascotasFragment"
-            app:destination="@id/mascotasFragment" />
+            app:destination="@id/mascotasFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/agendaFragment"
@@ -148,8 +135,4 @@
             android:id="@+id/action_nuevoMedicamentoFragment_to_medicamentosFragment"
             app:destination="@id/medicamentosFragment" />
     </fragment>
-    <activity
-        android:id="@+id/mascotaActivity"
-        android:name="sv.edu.catolica.care4pets.MascotaActivity"
-        android:label="MascotaActivity" />
 </navigation>
