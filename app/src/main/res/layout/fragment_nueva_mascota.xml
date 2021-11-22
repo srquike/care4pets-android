@@ -17,9 +17,13 @@
             android:padding="20dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imvFoto"
                 android:layout_width="match_parent"
                 android:layout_height="125dp"
-                android:src="@drawable/pet" />
+                android:src="@drawable/pet"
+
+                />
+
 
             <TextView
                 android:layout_width="match_parent"
