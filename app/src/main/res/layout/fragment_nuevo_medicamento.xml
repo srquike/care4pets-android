@@ -29,6 +29,7 @@
             android:layout_height="wrap_content"
             android:hint="Escriba el nombre del medicamento"
             android:minHeight="48dp"
+            android:inputType="textPersonName"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <TextView
@@ -97,7 +98,7 @@
                 android:id="@+id/imvFechaVencimiento"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@android:drawable/ic_menu_my_calendar"/>
+                android:src="@drawable/calendar2"/>
 
         </LinearLayout>
 
@@ -112,6 +113,7 @@
             android:layout_height="wrap_content"
             android:hint="Escriba el nombre del laboratorio"
             android:minHeight="48dp"
+            android:inputType="textPersonName"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
         <TextView
@@ -125,6 +127,7 @@
             android:layout_height="wrap_content"
             android:hint="Escriba algunas notas sobre el medicamento"
             android:minHeight="48dp"
+            android:inputType="textLongMessage"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
     </LinearLayout>
