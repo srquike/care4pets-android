@@ -26,7 +26,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class AgendaFragment extends Fragment {
+public class AgendaFragment extends Fragment implements EventosAdapter.OnEventosListener{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -76,8 +76,8 @@ public class AgendaFragment extends Fragment {
                 navController.navigate(R.id.nuevoEventoFragment);
             }
         });
-
-        adapter = new EventosAdapter(obtenerListaEventos());
+//10paso put this
+        adapter = new EventosAdapter(obtenerListaEventos(), this);
         rcvEventos.setAdapter(adapter);
 
         return vista;
@@ -161,6 +161,15 @@ public class AgendaFragment extends Fragment {
         }
 
         return super.onContextItemSelected(item);
+
+    }
+//2do paso
+    @Override
+    public void onEventosClick(int posicion) {
+        //11 paso
+        Bundle bundle = new Bundle();
+        bundle.putInt("Id",adapter.lstEventos.get(posicion).getId());
+        navController.navigate(R.id.nuevoEventoFragment, bundle);
 
     }
 

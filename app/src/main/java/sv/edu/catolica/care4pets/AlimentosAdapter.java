@@ -15,8 +15,11 @@ import java.util.ArrayList;
 public class AlimentosAdapter extends RecyclerView.Adapter<AlimentosAdapter.AlimentoViewHolder> {
 
     ArrayList<AlimentoModel> lstAlimentos;
+    private OnAlimentosListener onAlimentosListener;
 
-    public AlimentosAdapter(ArrayList<AlimentoModel> lstAlimentos) { this.lstAlimentos = lstAlimentos;
+    public AlimentosAdapter(ArrayList<AlimentoModel> lstAlimentos, OnAlimentosListener onAlimentosListener) {
+        this.lstAlimentos = lstAlimentos;
+        this.onAlimentosListener = onAlimentosListener;
     }
 
     @NonNull
@@ -27,7 +30,7 @@ public class AlimentosAdapter extends RecyclerView.Adapter<AlimentosAdapter.Alim
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
 
-        return new AlimentoViewHolder(view);
+        return new AlimentoViewHolder(view, onAlimentosListener);
     }
 
     @Override
@@ -49,20 +52,24 @@ public class AlimentosAdapter extends RecyclerView.Adapter<AlimentosAdapter.Alim
     }
 
 
-    public class AlimentoViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public class AlimentoViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener {
 
         ImageView icono;
         TextView nombre, descripcion;
         LinearLayout lytAlimento;
+        OnAlimentosListener onAlimentosListener;
 
-        public AlimentoViewHolder(@NonNull View itemView) {
+        public AlimentoViewHolder(@NonNull View itemView, OnAlimentosListener onAlimentosListener) {
             super(itemView);
 
+
+            this.onAlimentosListener = onAlimentosListener;
             icono = itemView.findViewById(R.id.imvIcono);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
             lytAlimento = itemView.findViewById(R.id.lytAlimento);
             lytAlimento.setOnCreateContextMenuListener(this);
+            lytAlimento.setOnClickListener(this);
         }
 
         @Override
@@ -72,5 +79,14 @@ public class AlimentosAdapter extends RecyclerView.Adapter<AlimentosAdapter.Alim
 
         }
 
+
+        @Override
+        public void onClick(View v) {
+            onAlimentosListener.onAlimentosClick(getAdapterPosition());
+
+        }
+    }
+    public interface OnAlimentosListener{
+        void onAlimentosClick(int posicion);
     }
 }

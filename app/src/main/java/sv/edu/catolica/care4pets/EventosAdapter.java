@@ -15,9 +15,13 @@ import java.util.ArrayList;
 public class EventosAdapter extends RecyclerView.Adapter<EventosAdapter.EventosViewHolder> {
 
     ArrayList<EventoModel> lstEventos;
+    //7to paso
+    private OnEventosListener onEventosListener;
 
-    public EventosAdapter(ArrayList<EventoModel> lstEventos) {
+    public EventosAdapter(ArrayList<EventoModel> lstEventos, OnEventosListener onEventosListener) {
+        //8otavo paso
         this.lstEventos = lstEventos;
+        this.onEventosListener = onEventosListener;
     }
 
     @NonNull
@@ -27,8 +31,8 @@ public class EventosAdapter extends RecyclerView.Adapter<EventosAdapter.EventosV
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.evento_item, null, false);
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
-
-        return new EventosViewHolder(view);
+//9no paso
+        return new EventosViewHolder(view, onEventosListener);
     }
 
     @Override
@@ -43,20 +47,25 @@ public class EventosAdapter extends RecyclerView.Adapter<EventosAdapter.EventosV
         return lstEventos.size();
     }
 
-    public class EventosViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public class EventosViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener {
 
         ImageView icono;
         TextView nombre, descripcion;
         LinearLayout lytEvento;
+        //4to paso
+        OnEventosListener onEventosListener;
 
-        public EventosViewHolder(@NonNull View itemView) {
+        public EventosViewHolder(@NonNull View itemView, OnEventosListener onEventosListener) {
             super(itemView);
-
+//5to paso
+            this.onEventosListener = onEventosListener;
             icono = itemView.findViewById(R.id.imvIcono);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
             lytEvento = itemView.findViewById(R.id.lytEvento);
             lytEvento.setOnCreateContextMenuListener(this);
+            //ultimo paso
+            lytEvento.setOnClickListener(this);
 
         }
 
@@ -65,11 +74,22 @@ public class EventosAdapter extends RecyclerView.Adapter<EventosAdapter.EventosV
             menu.setHeaderTitle("Opciones");
             menu.add(this.getAdapterPosition(), 121,0,"Eliminar");
         }
+//3er paso
+        @Override
+        public void onClick(View v) {
+            //6to paso
+            onEventosListener.onEventosClick(getAdapterPosition());
+
+        }
     }
 
     public void eliminarElementoSeleccionado(int posicion) {
         lstEventos.remove(posicion);
         notifyDataSetChanged();
+    }
+//1er paso
+    public interface OnEventosListener{
+        void onEventosClick(int posicion);
     }
 
 }

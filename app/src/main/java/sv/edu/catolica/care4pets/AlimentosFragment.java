@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class AlimentosFragment extends Fragment {
+public class AlimentosFragment extends Fragment implements AlimentosAdapter.OnAlimentosListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -75,7 +75,7 @@ public class AlimentosFragment extends Fragment {
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new AlimentosAdapter(obtenerListaAlimentos());
+        adapter = new AlimentosAdapter(obtenerListaAlimentos(), this);
         recyclerView.setAdapter(adapter);
 
         return view;
@@ -164,4 +164,12 @@ public class AlimentosFragment extends Fragment {
 
     }
 
+    @Override
+    public void onAlimentosClick(int posicion) {
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("Id",adapter.lstAlimentos.get(posicion).getId());
+        navController.navigate(R.id.nuevoAlimentoFragment, bundle);
+
+    }
 }

@@ -15,8 +15,13 @@ import java.util.ArrayList;
 public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdapter.ProfesionalesViewHolder>  {
 
     ArrayList<ProfesionalModel> lstProfesionales;
-
-    public ProfesionalesAdapter(ArrayList<ProfesionalModel> lstProfesionales) { this.lstProfesionales = lstProfesionales;
+    //8 se crea private OnListener onListener;
+    private OnProfesionalesListener onProfesionalesListener;
+    //9 se agrega el OnListener onListener luego de lst
+    public ProfesionalesAdapter(ArrayList<ProfesionalModel> lstProfesionales, OnProfesionalesListener onProfesionalesListener) {
+        this.lstProfesionales = lstProfesionales;
+        //10 se agrega el this.onListener = onListener;
+        this.onProfesionalesListener = onProfesionalesListener;
     }
 
     @NonNull
@@ -26,8 +31,8 @@ public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdap
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.profesional_item, null, false);
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
-
-        return new ProfesionalesViewHolder(view);
+        //11 se agrega la variable creada onListener en los parentesis y regresamos a clase fragment
+        return new ProfesionalesViewHolder(view, onProfesionalesListener);
     }
 
     @Override
@@ -47,21 +52,27 @@ public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdap
         lstProfesionales.remove(posicion);
         notifyDataSetChanged();
     }
-
-    public class ProfesionalesViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    //3ro se agrega el view.onclickListener y luego se implementa el metodo
+    public class ProfesionalesViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener {
 
         ImageView icono;
         TextView nombre, descripcion;
         LinearLayout lytProfesional;
-
-        public ProfesionalesViewHolder(@NonNull View itemView) {
+        //4to se crea variable OnListener
+        OnProfesionalesListener onProfesionalesListener;
+        //5to se agrega OnListener  onListener
+        public ProfesionalesViewHolder(@NonNull View itemView, OnProfesionalesListener onProfesionalesListener) {
             super(itemView);
 
+            //6to se crea el this.onListener = onListener
+            this.onProfesionalesListener = onProfesionalesListener;
             icono = itemView.findViewById(R.id.imvIcono);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
             lytProfesional = itemView.findViewById(R.id.lytProfesional);
             lytProfesional.setOnCreateContextMenuListener(this);
+            //ultimo paso
+            lytProfesional.setOnClickListener(this);
         }
 
         @Override
@@ -70,5 +81,17 @@ public class ProfesionalesAdapter extends RecyclerView.Adapter<ProfesionalesAdap
             menu.add(this.getAdapterPosition(), 121,0,"Eliminar");
         }
 
+    @Override
+    public void onClick(View v) {
+            //7to onListener.onCLick(getAdapterPosition());
+        onProfesionalesListener.onProfesionalesClick(getAdapterPosition());
+
     }
+}
+
+    //1ro se crea metodo OnListener
+    public interface OnProfesionalesListener{
+        void onProfesionalesClick(int posicion);
+    }
+
 }

@@ -3,6 +3,7 @@ package sv.edu.catolica.care4pets;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.os.Bundle;
@@ -23,6 +24,10 @@ import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class NuevoEventoFragment extends Fragment {
@@ -40,6 +45,8 @@ public class NuevoEventoFragment extends Fragment {
     private Spinner spnEvento;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
+    //12´paso
+    private int EventoId;
 
     public NuevoEventoFragment() {
 
@@ -67,7 +74,12 @@ public class NuevoEventoFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        //13 paso
+        if (getArguments()== null){
+            inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        }else{
+            inflater.inflate(R.menu.save_changes_menu, menu);
+        }
     }
 
     @Override
@@ -79,6 +91,10 @@ public class NuevoEventoFragment extends Fragment {
                 onBackPressed();
                 break;
             case R.id.btnCancelar:
+                onBackPressed();
+                break;
+            case R.id.btnGuardarCambios:
+                editarEvento(EventoId);
                 onBackPressed();
                 break;
         }
@@ -94,6 +110,8 @@ public class NuevoEventoFragment extends Fragment {
         db = adminDB.getWritableDatabase();
 
         View view = inflater.inflate(R.layout.fragment_nuevo_evento, container, false);
+        //14 paso
+        Bundle bundle = getArguments();
 
         edtFechaEvento = view.findViewById(R.id.edtFechaEvento);
         edtHoraEvento = view.findViewById(R.id.edtHoraEvento);
@@ -117,7 +135,68 @@ public class NuevoEventoFragment extends Fragment {
             }
         });
 
+        //15 paso crear metodo
+        llenarCampos(bundle);
+
         return view;
+    }
+
+    private void llenarCampos(Bundle bundle) {
+        if (bundle != null){
+            EventoId = bundle.getInt("Id");
+            EventoModel eventoModel = obtenerEventoPorId(EventoId);
+
+            if (eventoModel != null ){
+                edtNombreEvento.setText(eventoModel.getNombre());
+                edtFechaEvento.setText(eventoModel.getFecha().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+                edtHoraEvento.setText(eventoModel.getHora().format(DateTimeFormatter.ofPattern("HH:mm a")));
+                spnEvento.setSelection(Arrays.asList(getResources().getStringArray(R.array.tipoEventos)).indexOf(eventoModel.getTipoEvento()));
+                edtDescripcion.setText(eventoModel.getDescripcion());
+
+                MainActivity mainActivity = (MainActivity) getActivity();
+                mainActivity.getSupportActionBar().setTitle(eventoModel.getNombre());
+
+            }
+        }
+    }
+
+    private void editarEvento(int id){
+        db = adminDB.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        //values.put("ID_Evento",1);
+        values.put("Fecha", edtFechaEvento.getText().toString());
+        values.put("Nombre", edtNombreEvento.getText().toString());
+        values.put("Hora",edtHoraEvento.getText().toString());
+        values.put("TipoEvento",spnEvento.getSelectedItem().toString());
+        values.put("Descripcion",edtDescripcion.getText().toString());
+
+        long result = db.update("Evento",values,"ID_Evento = "+ id,null);
+        if (id>0){
+            MostrarMensaje("Se modificaron los datos");
+        }else{
+            MostrarMensaje("Error al modificar Datos");
+        }
+
+        db.close();
+    }
+
+    private EventoModel obtenerEventoPorId(int id){
+        db = adminDB.getReadableDatabase();
+        EventoModel eventoModel = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM Evento WHERE ID_Evento = " + id + " LIMIT 1 ",null);
+
+        if (cursor.moveToFirst()){
+            eventoModel = new EventoModel();
+            eventoModel.setId(cursor.getInt(0));
+            eventoModel.setNombre(cursor.getString(1));
+            eventoModel.setFecha(LocalDate.parse(cursor.getString(2), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            eventoModel.setHora(LocalTime.parse(cursor.getString(3), DateTimeFormatter.ofPattern("HH:mm a")));
+            eventoModel.setTipoEvento(cursor.getString(4));
+            eventoModel.setDescripcion(cursor.getString(5));
+            eventoModel.setIcono(R.drawable.calendar);
+        }
+
+        return eventoModel;
     }
 
     private void abrirCalendario() {

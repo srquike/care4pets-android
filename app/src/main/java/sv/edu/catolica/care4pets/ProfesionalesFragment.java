@@ -21,8 +21,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import java.util.ArrayList;
-
-public class ProfesionalesFragment extends Fragment {
+//2do se implementa las clase adapter.onlistener luego click derecho e implementar metodo
+public class ProfesionalesFragment extends Fragment implements ProfesionalesAdapter.OnProfesionalesListener {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -73,7 +73,8 @@ public class ProfesionalesFragment extends Fragment {
         });
 
         rcvProfesionales.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new ProfesionalesAdapter(obtenerListaProfesionales());
+        //12 agregamos el this. en adapter
+        adapter = new ProfesionalesAdapter(obtenerListaProfesionales(),this);
         rcvProfesionales.setAdapter(adapter);
 
 
@@ -156,5 +157,14 @@ public class ProfesionalesFragment extends Fragment {
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onProfesionalesClick(int posicion) {
+        //13 agregamos Bundle luego se dirige a la clase nuevoFragment
+        Bundle bundle = new Bundle();
+        bundle.putInt("Id",adapter.lstProfesionales.get(posicion).getId());
+        navController.navigate(R.id.nuevoProfesionalFragment, bundle);
+
     }
 }

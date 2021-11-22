@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class MedicamentosFragment extends Fragment {
+public class MedicamentosFragment extends Fragment implements MedicamentosAdapter.OnMedicamentosListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
@@ -64,6 +64,7 @@ public class MedicamentosFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_medicamentos, container, false);
         rcvMedicamentos = (RecyclerView) view.findViewById(R.id.rcvMedicamentos);
+
         FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +75,7 @@ public class MedicamentosFragment extends Fragment {
         });
 
         rcvMedicamentos.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new MedicamentosAdapter(obtenerListaMedicamentos());
+        adapter = new MedicamentosAdapter(obtenerListaMedicamentos(),this);
         rcvMedicamentos.setAdapter(adapter);
 
         return view;
@@ -90,11 +91,11 @@ public class MedicamentosFragment extends Fragment {
         db = adminDB.getReadableDatabase();
         ArrayList<MedicamentoModel> lstMedicamentos = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM Medicamentos", null);
-        MedicamentoModel medicamentoModel = null;
+
 
         if (cursor.moveToFirst()) {
             do {
-                medicamentoModel = new MedicamentoModel();
+                MedicamentoModel medicamentoModel = new MedicamentoModel();
                 medicamentoModel.setId(cursor.getInt(0));
                 medicamentoModel.setNombre(cursor.getString(1));
                 medicamentoModel.setNotas(cursor.getString(2));
@@ -156,5 +157,13 @@ public class MedicamentosFragment extends Fragment {
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+
+    @Override
+    public void onMedicamentosClick(int posicion) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("Id",adapter.lstMedicamentos.get(posicion).getId());
+        navController.navigate(R.id.nuevoMedicamentoFragment, bundle);
     }
 }

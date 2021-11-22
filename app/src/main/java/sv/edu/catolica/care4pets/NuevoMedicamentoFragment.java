@@ -2,6 +2,7 @@ package sv.edu.catolica.care4pets;
 
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Calendar;
 
 public class NuevoMedicamentoFragment extends Fragment {
@@ -33,6 +37,7 @@ public class NuevoMedicamentoFragment extends Fragment {
     private ImageView imvFechaVencimiento;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
+    private int medicamentoId;
 
     public NuevoMedicamentoFragment() {
 
@@ -60,7 +65,12 @@ public class NuevoMedicamentoFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        if (getArguments()== null){
+            inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        }else{
+            inflater.inflate(R.menu.save_changes_menu, menu);
+        }
+
     }
 
     @Override
@@ -74,6 +84,10 @@ public class NuevoMedicamentoFragment extends Fragment {
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
+            case R.id.btnGuardarCambios:
+                editarMedicamento(medicamentoId);
+                onBackPressed();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -85,6 +99,7 @@ public class NuevoMedicamentoFragment extends Fragment {
         adminDB = new ControladorBD(getContext(), "DBCare4Pets", null, 1);
         db = adminDB.getWritableDatabase();
         View view = inflater.inflate(R.layout.fragment_nuevo_medicamento, container, false);
+        Bundle bundle = getArguments();
         edtNombre = view.findViewById(R.id.txtNombre);
         edtCantidad = view.findViewById(R.id.txtCantidad);
         edtLaboratorio = view.findViewById(R.id.txtLaboratorio);
@@ -100,8 +115,72 @@ public class NuevoMedicamentoFragment extends Fragment {
                 abrirCalendario(edtFechaVencimiento);
             }
         });
+        llenarCampos(bundle);
 
         return view;
+    }
+    private void llenarCampos(Bundle bundle) {
+        //18 se crea el if(bundle)
+        if (bundle != null) {
+            medicamentoId = bundle.getInt("Id");
+            MedicamentoModel medicamentoModel = obtenerMedicamentoPorId(medicamentoId);
+
+            if (medicamentoModel != null){
+                edtNombre.setText(medicamentoModel.getNombre());
+                spnPresentacion.setSelection(Arrays.asList(getResources().getStringArray(R.array.tiposMedicamentos)).indexOf(medicamentoModel.getPresentacion()));
+                edtCantidad.setText(Double.toString(medicamentoModel.getCantidad()));
+                spnUnidad.setSelection(Arrays.asList(getResources().getStringArray(R.array.tiposMedicamentos)).indexOf(medicamentoModel.getUnidad()));
+                edtFechaVencimiento.setText(medicamentoModel.getFechaVencimiento().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+                edtLaboratorio.setText(medicamentoModel.getLaboratorio());
+                edtNotas.setText(medicamentoModel.getNotas());
+
+                MainActivity mainActivity= (MainActivity) getActivity();
+                mainActivity.getSupportActionBar().setTitle(medicamentoModel.getNombre());
+
+            }
+        }
+    }
+    private MedicamentoModel obtenerMedicamentoPorId(int id){
+        db = adminDB.getReadableDatabase();
+        MedicamentoModel medicamentoModel = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM Medicamentos WHERE ID_Medicamento = "+ id +" LIMIT 1",null);
+
+        if (cursor.moveToFirst()){
+            medicamentoModel = new MedicamentoModel();
+            medicamentoModel.setId(cursor.getInt(0));
+            medicamentoModel.setNombre(cursor.getString(1));
+            medicamentoModel.setNotas(cursor.getString(2));
+            medicamentoModel.setPresentacion(cursor.getString(3));
+            medicamentoModel.setCantidad(Double.parseDouble(cursor.getString(4)));
+            medicamentoModel.setUnidad(cursor.getString(5));
+            medicamentoModel.setFechaVencimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            medicamentoModel.setLaboratorio(cursor.getString(7));
+            medicamentoModel.setIcono(R.drawable.first_aid);
+            medicamentoModel.setDescripcion(medicamentoModel.getPresentacion() + " - " + medicamentoModel.getCantidad() + " " + medicamentoModel.getUnidad() + " - " + medicamentoModel.getFechaVencimiento());
+        }
+
+        return medicamentoModel;
+    }
+    private void editarMedicamento(int id){
+        db = adminDB.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("Nombre", edtNombre.getText().toString());
+        values.put("Presentacion", spnPresentacion.getSelectedItem().toString());
+        values.put("Cantidad", edtCantidad.getText().toString());
+        values.put("Unidad", spnUnidad.getSelectedItem().toString());
+        values.put("FechaVencimiento", edtFechaVencimiento.getText().toString());
+        values.put("Laboratorio", edtLaboratorio.getText().toString());
+        values.put("notas", edtNotas.getText().toString());
+
+        long result = db.update("Medicamentos",values, "ID_Medicamento = "+ id,null);
+        if (id > 0) {
+            MostrarMensaje("Medicamento Modificado");
+        } else {
+            MostrarMensaje("Error al modificar Datos");
+        }
+
+        db.close();
     }
 
     private void abrirCalendario(EditText editText) {

@@ -1,6 +1,7 @@
 package sv.edu.catolica.care4pets;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
 public class NuevoProfesionalFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -25,6 +28,9 @@ public class NuevoProfesionalFragment extends Fragment {
     private Spinner spnProfesion;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
+    //14 se crea variable int nombreId;
+    private int profesionalId;
+
 
     public NuevoProfesionalFragment() {
 
@@ -52,7 +58,13 @@ public class NuevoProfesionalFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        //15 se crea un if para guardar o modificar el inflater
+        if (getArguments()== null){
+            inflater.inflate(R.menu.save_or_cancel_menu, menu);
+        }else{
+            inflater.inflate(R.menu.save_changes_menu, menu);
+        }
+
     }
 
     @Override
@@ -64,6 +76,11 @@ public class NuevoProfesionalFragment extends Fragment {
                 onBackPressed();
                 break;
             case R.id.btnCancelar:
+                onBackPressed();
+                break;
+                //21 se crea el nuevo case para guardarCambios
+            case R.id.btnGuardarCambios:
+                editarProfesional(profesionalId);
                 onBackPressed();
                 break;
         }
@@ -78,7 +95,8 @@ public class NuevoProfesionalFragment extends Fragment {
         adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
         db = adminDB.getWritableDatabase();
         View view = inflater.inflate(R.layout.fragment_nuevo_profesional, container, false);
-
+        //16 se crea bundle getArguments;
+        Bundle bundle = getArguments();
         edtNombre = view.findViewById(R.id.txtNombre);
         edtTelefono = view.findViewById(R.id.txtTelefono);
         edtCelular = view.findViewById(R.id.txtCelular);
@@ -86,9 +104,79 @@ public class NuevoProfesionalFragment extends Fragment {
         edtDireccion = view.findViewById(R.id.txtDireccion);
         spnProfesion = view.findViewById(R.id.spnProfesion);
 
+        //17 se llama y crea el metodo llenarCampos(bundle);
+        llenarCampos(bundle);
 
         return view;
     }
+
+    private void llenarCampos(Bundle bundle) {
+        //18 se crea el if(bundle)
+        if (bundle != null) {
+            profesionalId = bundle.getInt("Id");
+            ProfesionalModel profesionalModel = obtenerAlimentoPorId(profesionalId);
+
+            if (profesionalModel != null){
+                edtNombre.setText(profesionalModel.getNombre());
+                spnProfesion.setSelection(Arrays.asList(getResources().getStringArray(R.array.profesiones)).indexOf(profesionalModel.getProfesion()));
+                edtTelefono.setText(profesionalModel.getTelefono());
+                edtCelular.setText(profesionalModel.getCelular());
+                edtCorreo.setText(profesionalModel.getCorreo());
+                edtDireccion.setText(profesionalModel.getDireccion());
+
+                MainActivity mainActivity= (MainActivity) getActivity();
+                mainActivity.getSupportActionBar().setTitle(profesionalModel.getNombre());
+
+            }
+        }
+    }
+
+
+        //19 se crea el metodo obtenerPorId
+    private ProfesionalModel obtenerAlimentoPorId(int id){
+        db = adminDB.getReadableDatabase();
+        ProfesionalModel profesionalModel = null;
+        Cursor cursor = db.rawQuery("SELECT * FROM Profesionales WHERE ID_Profesionales = "+ id +" LIMIT 1",null);
+
+        if (cursor.moveToFirst()){
+            profesionalModel = new ProfesionalModel();
+            profesionalModel.setId(cursor.getInt(0));
+            profesionalModel.setNombre(cursor.getString(1));
+            profesionalModel.setCorreo(cursor.getString(2));
+            profesionalModel.setTelefono(cursor.getString(3));
+            profesionalModel.setProfesion(cursor.getString(4));
+            profesionalModel.setCelular(cursor.getString(5));
+            profesionalModel.setDireccion(cursor.getString(6));
+            profesionalModel.setDescripcion(profesionalModel.getProfesion() + " - " + profesionalModel.getTelefono() + " - " + profesionalModel.getDireccion());
+            profesionalModel.setIcono(R.drawable.businessman);
+        }
+
+        return profesionalModel;
+    }
+
+    //20 crear metodo editar(int id)
+    private void editarProfesional(int id){
+        db = adminDB.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("Nombre", edtNombre.getText().toString());
+        values.put("Profesion", spnProfesion.getSelectedItem().toString());
+        values.put("Telefono",edtTelefono.getText().toString());
+        values.put("Celular",edtCelular.getText().toString());
+        values.put("Correo",edtCorreo.getText().toString());
+        values.put("Direccion",edtDireccion.getText().toString());
+
+        //21 modificamos la variable id por result y la consulta a update
+        long result = db.update("Profesionales",values, "ID_Profesionales = "+ id,null);
+        if (id>0){
+            MostrarMensaje("Profesional Modificado");
+        }else{
+            MostrarMensaje("Error al Modificar Datos");
+        }
+        db.close();
+
+    }
+
 
     private void insertToDB(){
 

@@ -16,7 +16,11 @@ public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapte
 
     ArrayList<MedicamentoModel> lstMedicamentos;
 
-    public MedicamentosAdapter(ArrayList<MedicamentoModel> lstMedicamentos) { this.lstMedicamentos = lstMedicamentos;
+    private OnMedicamentosListener onMedicamentosListener;
+
+    public MedicamentosAdapter(ArrayList<MedicamentoModel> lstMedicamentos, OnMedicamentosListener onMedicamentosListener ) {
+        this.lstMedicamentos = lstMedicamentos;
+        this.onMedicamentosListener = onMedicamentosListener;
     }
 
     @NonNull
@@ -27,7 +31,7 @@ public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapte
 
         view.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT));
 
-        return new MedicamentoViewHolder(view);
+        return new MedicamentoViewHolder(view, onMedicamentosListener);
     }
 
     @Override
@@ -48,20 +52,23 @@ public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapte
         notifyDataSetChanged();
     }
 
-    public class MedicamentoViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener{
+    public class MedicamentoViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener{
 
         ImageView icono;
         TextView nombre, descripcion;
         LinearLayout lytMedicamento;
+        OnMedicamentosListener onMedicamentosListener;
 
-        public MedicamentoViewHolder(@NonNull View itemView) {
+        public MedicamentoViewHolder(@NonNull View itemView, OnMedicamentosListener onMedicamentosListener) {
             super(itemView);
 
+            this.onMedicamentosListener = onMedicamentosListener;
             icono = itemView.findViewById(R.id.imvIcono);
             nombre = itemView.findViewById(R.id.txvNombre);
             descripcion = itemView.findViewById(R.id.txvDescripcion);
             lytMedicamento = itemView.findViewById(R.id.lytMedicamento);
             lytMedicamento.setOnCreateContextMenuListener(this);
+            lytMedicamento.setOnClickListener(this);
         }
 
         @Override
@@ -69,5 +76,15 @@ public class MedicamentosAdapter extends RecyclerView.Adapter<MedicamentosAdapte
             menu.setHeaderTitle("Opciones");
             menu.add(this.getAdapterPosition(), 121,0,"Eliminar");
         }
+
+        @Override
+        public void onClick(View v) {
+            onMedicamentosListener.onMedicamentosClick(getAdapterPosition());
+
+        }
+    }
+    //1ro se crea metodo OnListener
+    public interface OnMedicamentosListener{
+        void onMedicamentosClick(int posicion);
     }
 }
