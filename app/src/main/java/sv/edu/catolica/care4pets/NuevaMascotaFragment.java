@@ -11,17 +11,18 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.icu.util.Output;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +41,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -53,7 +55,7 @@ public class NuevaMascotaFragment extends Fragment {
     private String mParam2;
     private EditText edtFechaEsterilizacion, edtNombre, edtRaza, edtColor;
     private EditText edtFechaNacimiento;
-    private ImageView imvFechaNacimiento, imvFechaEsterilizacion, imgPet;
+    private ImageView imvFechaNacimiento, imvFechaEsterilizacion, imvFoto;
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
     private Spinner spnSexo, spnEspecie;
@@ -61,7 +63,7 @@ public class NuevaMascotaFragment extends Fragment {
     private ControladorBD adminDB;
     private SQLiteDatabase db;
     private int mascotaId;
-    private static final int REQUEST_PERMISSION_CAM = 100, REQUEST_PERMISSION_STORAGE=200, REQUEST_CAPTURE=3;
+    private static final int REQUEST_PERMISSION_CAM = 100, REQUEST_PERMISSION_STORAGE = 200, REQUEST_CAPTURE = 3;
     Bitmap fotoCapturada;
 
 
@@ -117,15 +119,14 @@ public class NuevaMascotaFragment extends Fragment {
         edtColor = vista.findViewById(R.id.txtColor);
         rbSi = vista.findViewById(R.id.rbSi);
         rbNo = vista.findViewById(R.id.rbNo);
-        imgPet = vista.findViewById(R.id.imvFoto);
-        imgPet.setOnClickListener(new View.OnClickListener() {
+        imvFoto = vista.findViewById(R.id.imvFoto);
+
+        imvFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 procesoCapturar();
-
             }
         });
-
 
         rbSi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -264,9 +265,10 @@ public class NuevaMascotaFragment extends Fragment {
     }
 
     private void insertToDB() {
+        String nombre = edtNombre.getText().toString();
         db = adminDB.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put("Nombre", edtNombre.getText().toString());
+        values.put("Nombre", nombre);
         values.put("Raza", edtRaza.getText().toString());
         values.put("Sexo", spnSexo.getSelectedItem().toString());
         values.put("Especie", spnEspecie.getSelectedItem().toString());
@@ -290,7 +292,8 @@ public class NuevaMascotaFragment extends Fragment {
         }
 
         db.close();
-        procesoGuardar();
+        verificarPermisoAlmacenamieto();
+        guardarFoto(nombre);
     }
 
     private void MostrarMensaje(String msg) {
@@ -308,7 +311,6 @@ public class NuevaMascotaFragment extends Fragment {
         values.put("Color", edtColor.getText().toString());
         values.put("FechaNaci", edtFechaNacimiento.getText().toString());
         values.put("FechaEsterilizacion", edtFechaEsterilizacion.getText().toString());
-
 
 
         if (rbSi.isChecked()) {
@@ -329,85 +331,72 @@ public class NuevaMascotaFragment extends Fragment {
         db.close();
     }
 
-    public void procesoCapturar(){
+    public void procesoCapturar() {
         VerificarPermisoCamara();
 
     }
 
     private void VerificarPermisoCamara() {
-        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)== PackageManager.PERMISSION_GRANTED){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 tomarFoto();
-            }else{
-                ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.CAMERA},REQUEST_PERMISSION_CAM);
+            } else {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_PERMISSION_CAM);
             }
-        }else{
+        } else {
             tomarFoto();
         }
-
-
     }
 
     private void tomarFoto() {
-        Intent captura= new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (captura.resolveActivity(getActivity().getPackageManager())!= null);{
+        Intent captura = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (captura.resolveActivity(getActivity().getPackageManager()) != null) ;
+        {
             startActivityForResult(captura, REQUEST_CAPTURE);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==REQUEST_CAPTURE){
-            if (resultCode==RESULT_OK && data!=null){
+        if (requestCode == REQUEST_CAPTURE) {
+            if (resultCode == RESULT_OK && data != null) {
                 fotoCapturada = (Bitmap) data.getExtras().get("data");
-                imgPet.setImageBitmap(fotoCapturada);
+                imvFoto.setImageBitmap(fotoCapturada);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void procesoGuardar(){
-        VerificarPermisoAlmacenamieto();
-
-    }
-    private void VerificarPermisoAlmacenamieto() {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P){
-            if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
-                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)== PackageManager.PERMISSION_GRANTED){
-                    guardarFoto();
-                }else{
-                    ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST_PERMISSION_STORAGE);
+    private void verificarPermisoAlmacenamieto() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
                 }
-            }else{
-                guardarFoto();
             }
-
-        }else{
-            guardarFoto();
         }
-
     }
 
-    private void guardarFoto() {
+    private void guardarFoto(String nombreFoto) {
 
-        OutputStream fos=null;
-        File miArchivo=null;
+        OutputStream fos = null;
+        File miArchivo = null;
         String nombreArchivo = "";
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ContentResolver resolver = getContext().getContentResolver();
 
             ContentValues valores = new ContentValues();
 
-            nombreArchivo = edtNombre.getText()+"_"+ System.currentTimeMillis();
+            nombreArchivo = nombreFoto;
 
-            valores.put(MediaStore.Images.Media.DISPLAY_NAME,nombreArchivo);
-            valores.put(MediaStore.Images.Media.MIME_TYPE,"image/jpeg");
-            valores.put(MediaStore.Images.Media.RELATIVE_PATH,"Pictures/MyAppCare4Pets/Mascotas");
-            valores.put(MediaStore.Images.Media.IS_PENDING,1);
+            valores.put(MediaStore.Images.Media.DISPLAY_NAME, nombreArchivo);
+            valores.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+            valores.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/MyAppCare4Pets/Mascotas");
+            valores.put(MediaStore.Images.Media.IS_PENDING, 1);
 
             Uri coleccion = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-            Uri imagenUri = resolver.insert(coleccion,valores);
+            Uri imagenUri = resolver.insert(coleccion, valores);
 
 
             try {
@@ -417,15 +406,14 @@ public class NuevaMascotaFragment extends Fragment {
             }
 
             valores.clear();
-            valores.put(MediaStore.Images.Media.IS_PENDING,0);
+            valores.put(MediaStore.Images.Media.IS_PENDING, 0);
 
-            resolver.update(imagenUri,valores,null,null);
+            resolver.update(imagenUri, valores, null, null);
 
-
-        }else{
+        } else {
             String Directorio = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
 
-            miArchivo = new File(Directorio,nombreArchivo);
+            miArchivo = new File(Directorio, nombreArchivo);
             try {
                 fos = new FileOutputStream(miArchivo);
             } catch (FileNotFoundException e) {
@@ -433,30 +421,25 @@ public class NuevaMascotaFragment extends Fragment {
             }
         }
 
-        boolean guardado = fotoCapturada.compress(Bitmap.CompressFormat.JPEG,100,fos);
+        boolean guardado = fotoCapturada.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
-        if (guardado){
-            Toast.makeText(getContext(), "Archivo de foto se guardo correctamente", Toast.LENGTH_LONG).show();
+        if (guardado == false) {
+            Toast.makeText(getContext(), "La foto no se guardo correctamente", Toast.LENGTH_LONG).show();
         }
 
-        if (fos!=null){
+        if (fos != null) {
             try {
                 fos.flush();
                 fos.close();
             } catch (IOException e) {
-                Toast.makeText(getContext(), "Error "+e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error " + e.toString(), Toast.LENGTH_SHORT).show();
             }
-
         }
 
-        if (miArchivo!=null){
-            MediaScannerConnection.scanFile(getContext(),new String[]{
+        if (miArchivo != null) {
+            MediaScannerConnection.scanFile(getContext(), new String[]{
                     miArchivo.toString()
-            },null,null);
+            }, null, null);
         }
-
     }
-
-
-
 }
