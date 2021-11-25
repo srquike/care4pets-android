@@ -442,4 +442,20 @@ public class NuevaMascotaFragment extends Fragment {
             }, null, null);
         }
     }
+
+    public void ValidarCampos(){
+        if (edtNombre.equals("")){
+            edtNombre.setText("Ingrese un Nombre");
+        }else if (edtRaza.equals("")){
+            edtRaza.setText("Ingrese una raza");
+        }else if (edtColor.equals("")){
+            edtColor.setText("Ingrese un color");
+        }else if (edtFechaNacimiento.equals("")){
+            edtFechaNacimiento.setText("Ingrese una fecha");
+        }
+        else if (edtFechaEsterilizacion.equals("")){
+            edtFechaEsterilizacion.setText("Ingrese una fecha");
+        }
+    }
+
 }

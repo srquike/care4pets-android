@@ -259,4 +259,18 @@ public class NuevoEventoFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }
+
+    public void ValidarCampos(){
+        if (edtFechaEvento.equals("")){
+            edtFechaEvento.setText("Ingrese fecha");
+        }else if (edtHoraEvento.equals("")){
+            edtHoraEvento.setText("Ingrese fecha");
+        }else if (edtNombreEvento.equals("")){
+            edtNombreEvento.setText("Ingrese Nombre");
+        }else if (edtDescripcion.equals("")){
+            edtDescripcion.setText("Ingrese Hora");
+        }else {}
+
+
+    }
 }

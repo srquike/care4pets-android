@@ -232,4 +232,17 @@ public class NuevoMedicamentoFragment extends Fragment {
         FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack();
     }
+
+    public void ValidarCampos(){
+        if (edtNombre.equals("")){
+            edtNombre.setText("Ingrese nombre");
+        }else if (edtCantidad.equals(null)){
+            edtCantidad.setText(0);
+        }else if (edtFechaVencimiento.equals("")){
+            edtFechaVencimiento.setText("Ingrese Fecha");
+        }else if (edtLaboratorio.equals("")){
+            edtLaboratorio.setText("Ingrese Laboratorio");
+        }else {}
+
+    }
 }

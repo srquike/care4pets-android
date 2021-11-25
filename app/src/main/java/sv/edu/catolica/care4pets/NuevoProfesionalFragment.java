@@ -110,6 +110,7 @@ public class NuevoProfesionalFragment extends Fragment {
         return view;
     }
 
+
     private void llenarCampos(Bundle bundle) {
         //18 se crea el if(bundle)
         if (bundle != null) {
@@ -208,4 +209,21 @@ public class NuevoProfesionalFragment extends Fragment {
         fm.popBackStack();
     }
 
+    
+    public void ValidarCampos(){
+        if (edtNombre.equals("")){
+            edtNombre.setText("Ingrese nombre");
+        }else if (edtTelefono.equals("")){
+            edtTelefono.setText("Ingrese Numero");
+        }else if (edtCelular.equals("")){
+            edtCelular.setText("Ingrese Celular");
+        }else if (edtCorreo.equals("")){
+            edtCorreo.setText("Ingrese Correo");
+        }else if(edtDireccion.equals("")){
+            edtDireccion.setText("Ingrese Direccion");
+        }else  {}
+
+
+
+    }
 }

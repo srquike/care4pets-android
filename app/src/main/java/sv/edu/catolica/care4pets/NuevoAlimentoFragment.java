@@ -246,4 +246,24 @@ public class NuevoAlimentoFragment extends Fragment {
         db.close();
 
     }
+
+    public void ValidarCampos(){
+        if (edtNombre.equals("")){
+            edtNombre.setText("Ingrese un nombre");
+
+        }else if (edtCantidad.equals(null)){
+            edtCantidad.setText(0);
+        }else if (edtPresentacion.equals("")){
+            edtPresentacion.setText("Ingrese presentacion");
+        }else if (edtMarca.equals("")){
+            edtMarca.setText("Ingrese marca");
+        }else if (edtPrecio.equals(null)){
+            edtPrecio.setText(0);
+        }else if (edtFechaVencimiento.equals("")){
+            edtFechaVencimiento.setText("Ingrese fecha");
+        }else if (edtNotas.equals("")){
+            edtMarca.setText("Ingrese notas");
+        }
+
+    }
 }
