@@ -65,9 +65,9 @@ public class NuevoMedicamentoFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (getArguments()== null){
+        if (getArguments() == null) {
             inflater.inflate(R.menu.save_or_cancel_menu, menu);
-        }else{
+        } else {
             inflater.inflate(R.menu.save_changes_menu, menu);
         }
 
@@ -78,15 +78,19 @@ public class NuevoMedicamentoFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.btnAceptar:
-                insertToDB();
-                onBackPressed();
+                if (validarCampos()) {
+                    insertToDB();
+                    onBackPressed();
+                }
                 break;
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
             case R.id.btnGuardarCambios:
-                editarMedicamento(medicamentoId);
-                onBackPressed();
+                if (validarCampos()) {
+                    editarMedicamento(medicamentoId);
+                    onBackPressed();
+                }
                 break;
         }
 
@@ -119,13 +123,14 @@ public class NuevoMedicamentoFragment extends Fragment {
 
         return view;
     }
+
     private void llenarCampos(Bundle bundle) {
         //18 se crea el if(bundle)
         if (bundle != null) {
             medicamentoId = bundle.getInt("Id");
             MedicamentoModel medicamentoModel = obtenerMedicamentoPorId(medicamentoId);
 
-            if (medicamentoModel != null){
+            if (medicamentoModel != null) {
                 edtNombre.setText(medicamentoModel.getNombre());
                 spnPresentacion.setSelection(Arrays.asList(getResources().getStringArray(R.array.tiposMedicamentos)).indexOf(medicamentoModel.getPresentacion()));
                 edtCantidad.setText(Double.toString(medicamentoModel.getCantidad()));
@@ -134,18 +139,19 @@ public class NuevoMedicamentoFragment extends Fragment {
                 edtLaboratorio.setText(medicamentoModel.getLaboratorio());
                 edtNotas.setText(medicamentoModel.getNotas());
 
-                MainActivity mainActivity= (MainActivity) getActivity();
+                MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.getSupportActionBar().setTitle(medicamentoModel.getNombre());
 
             }
         }
     }
-    private MedicamentoModel obtenerMedicamentoPorId(int id){
+
+    private MedicamentoModel obtenerMedicamentoPorId(int id) {
         db = adminDB.getReadableDatabase();
         MedicamentoModel medicamentoModel = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM Medicamentos WHERE ID_Medicamento = "+ id +" LIMIT 1",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM Medicamentos WHERE ID_Medicamento = " + id + " LIMIT 1", null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             medicamentoModel = new MedicamentoModel();
             medicamentoModel.setId(cursor.getInt(0));
             medicamentoModel.setNombre(cursor.getString(1));
@@ -161,7 +167,8 @@ public class NuevoMedicamentoFragment extends Fragment {
 
         return medicamentoModel;
     }
-    private void editarMedicamento(int id){
+
+    private void editarMedicamento(int id) {
         db = adminDB.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -173,7 +180,7 @@ public class NuevoMedicamentoFragment extends Fragment {
         values.put("Laboratorio", edtLaboratorio.getText().toString());
         values.put("notas", edtNotas.getText().toString());
 
-        long result = db.update("Medicamentos",values, "ID_Medicamento = "+ id,null);
+        long result = db.update("Medicamentos", values, "ID_Medicamento = " + id, null);
         if (id > 0) {
             MostrarMensaje("Medicamento Modificado");
         } else {
@@ -200,7 +207,6 @@ public class NuevoMedicamentoFragment extends Fragment {
 
         datePickerDialog.show();
     }
-
 
     private void insertToDB() {
 
@@ -233,16 +239,20 @@ public class NuevoMedicamentoFragment extends Fragment {
         fm.popBackStack();
     }
 
-    public void ValidarCampos(){
-        if (edtNombre.equals("")){
-            edtNombre.setText("Ingrese nombre");
-        }else if (edtCantidad.equals(null)){
-            edtCantidad.setText(0);
-        }else if (edtFechaVencimiento.equals("")){
-            edtFechaVencimiento.setText("Ingrese Fecha");
-        }else if (edtLaboratorio.equals("")){
-            edtLaboratorio.setText("Ingrese Laboratorio");
-        }else {}
+    public boolean validarCampos() {
+        boolean esValidado = true;
 
+        if (edtNombre.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("El nombre del medicamento es requerido");
+        } else if (edtCantidad.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La cantidad del medicamento es requerida");
+        } else if (edtFechaVencimiento.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La fecha de vencimiento del medicamento es requerida");
+        }
+
+        return esValidado;
     }
 }
