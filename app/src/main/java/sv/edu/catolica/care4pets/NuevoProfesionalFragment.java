@@ -28,9 +28,7 @@ public class NuevoProfesionalFragment extends Fragment {
     private Spinner spnProfesion;
     private ControladorBD adminDB;
     private SQLiteDatabase db;
-    //14 se crea variable int nombreId;
     private int profesionalId;
-
 
     public NuevoProfesionalFragment() {
 
@@ -59,9 +57,9 @@ public class NuevoProfesionalFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //15 se crea un if para guardar o modificar el inflater
-        if (getArguments()== null){
+        if (getArguments() == null) {
             inflater.inflate(R.menu.save_or_cancel_menu, menu);
-        }else{
+        } else {
             inflater.inflate(R.menu.save_changes_menu, menu);
         }
 
@@ -70,21 +68,24 @@ public class NuevoProfesionalFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.btnAceptar:
-                insertToDB();
-                onBackPressed();
+                if (validarCampos()) {
+                    insertToDB();
+                    onBackPressed();
+                }
                 break;
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
-                //21 se crea el nuevo case para guardarCambios
+            //21 se crea el nuevo case para guardarCambios
             case R.id.btnGuardarCambios:
-                editarProfesional(profesionalId);
-                onBackPressed();
+                if (validarCampos()) {
+                    editarProfesional(profesionalId);
+                    onBackPressed();
+                }
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -92,7 +93,7 @@ public class NuevoProfesionalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        adminDB = new ControladorBD(getContext(), "DBCare4Pets", null, 1);
         db = adminDB.getWritableDatabase();
         View view = inflater.inflate(R.layout.fragment_nuevo_profesional, container, false);
         //16 se crea bundle getArguments;
@@ -110,14 +111,13 @@ public class NuevoProfesionalFragment extends Fragment {
         return view;
     }
 
-
     private void llenarCampos(Bundle bundle) {
         //18 se crea el if(bundle)
         if (bundle != null) {
             profesionalId = bundle.getInt("Id");
             ProfesionalModel profesionalModel = obtenerAlimentoPorId(profesionalId);
 
-            if (profesionalModel != null){
+            if (profesionalModel != null) {
                 edtNombre.setText(profesionalModel.getNombre());
                 spnProfesion.setSelection(Arrays.asList(getResources().getStringArray(R.array.profesiones)).indexOf(profesionalModel.getProfesion()));
                 edtTelefono.setText(profesionalModel.getTelefono());
@@ -125,21 +125,20 @@ public class NuevoProfesionalFragment extends Fragment {
                 edtCorreo.setText(profesionalModel.getCorreo());
                 edtDireccion.setText(profesionalModel.getDireccion());
 
-                MainActivity mainActivity= (MainActivity) getActivity();
+                MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.getSupportActionBar().setTitle(profesionalModel.getNombre());
 
             }
         }
     }
 
-
-        //19 se crea el metodo obtenerPorId
-    private ProfesionalModel obtenerAlimentoPorId(int id){
+    //19 se crea el metodo obtenerPorId
+    private ProfesionalModel obtenerAlimentoPorId(int id) {
         db = adminDB.getReadableDatabase();
         ProfesionalModel profesionalModel = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM Profesionales WHERE ID_Profesionales = "+ id +" LIMIT 1",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM Profesionales WHERE ID_Profesionales = " + id + " LIMIT 1", null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             profesionalModel = new ProfesionalModel();
             profesionalModel.setId(cursor.getInt(0));
             profesionalModel.setNombre(cursor.getString(1));
@@ -156,44 +155,43 @@ public class NuevoProfesionalFragment extends Fragment {
     }
 
     //20 crear metodo editar(int id)
-    private void editarProfesional(int id){
+    private void editarProfesional(int id) {
         db = adminDB.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Profesion", spnProfesion.getSelectedItem().toString());
-        values.put("Telefono",edtTelefono.getText().toString());
-        values.put("Celular",edtCelular.getText().toString());
-        values.put("Correo",edtCorreo.getText().toString());
-        values.put("Direccion",edtDireccion.getText().toString());
+        values.put("Telefono", edtTelefono.getText().toString());
+        values.put("Celular", edtCelular.getText().toString());
+        values.put("Correo", edtCorreo.getText().toString());
+        values.put("Direccion", edtDireccion.getText().toString());
 
         //21 modificamos la variable id por result y la consulta a update
-        long result = db.update("Profesionales",values, "ID_Profesionales = "+ id,null);
-        if (id>0){
+        long result = db.update("Profesionales", values, "ID_Profesionales = " + id, null);
+        if (id > 0) {
             MostrarMensaje("Profesional Modificado");
-        }else{
+        } else {
             MostrarMensaje("Error al Modificar Datos");
         }
         db.close();
 
     }
 
-
-    private void insertToDB(){
+    private void insertToDB() {
 
         ContentValues values = new ContentValues();
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Profesion", spnProfesion.getSelectedItem().toString());
-        values.put("Telefono",edtTelefono.getText().toString());
-        values.put("Celular",edtCelular.getText().toString());
-        values.put("Correo",edtCorreo.getText().toString());
-        values.put("Direccion",edtDireccion.getText().toString());
+        values.put("Telefono", edtTelefono.getText().toString());
+        values.put("Celular", edtCelular.getText().toString());
+        values.put("Correo", edtCorreo.getText().toString());
+        values.put("Direccion", edtDireccion.getText().toString());
 
 
-        long id = db.insert("Profesionales",null,values);
-        if (id>0){
+        long id = db.insert("Profesionales", null, values);
+        if (id > 0) {
             MostrarMensaje("Profesional Agregado");
-        }else{
+        } else {
             MostrarMensaje("Error al Ingresar Datos");
         }
         db.close();
@@ -209,21 +207,20 @@ public class NuevoProfesionalFragment extends Fragment {
         fm.popBackStack();
     }
 
-    
-    public void ValidarCampos(){
-        if (edtNombre.equals("")){
-            edtNombre.setText("Ingrese nombre");
-        }else if (edtTelefono.equals("")){
-            edtTelefono.setText("Ingrese Numero");
-        }else if (edtCelular.equals("")){
-            edtCelular.setText("Ingrese Celular");
-        }else if (edtCorreo.equals("")){
-            edtCorreo.setText("Ingrese Correo");
-        }else if(edtDireccion.equals("")){
-            edtDireccion.setText("Ingrese Direccion");
-        }else  {}
+    public boolean validarCampos() {
+        boolean esValidado = true;
 
+        if (edtNombre.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("El nombre del profesional es requerido");
+        } else if (edtCelular.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("El número de celular del profesional es requerido");
+        } else if (edtDireccion.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La dirección del profesional es requerida");
+        }
 
-
+        return esValidado;
     }
 }
