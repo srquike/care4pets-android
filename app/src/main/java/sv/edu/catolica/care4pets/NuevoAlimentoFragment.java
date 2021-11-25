@@ -30,7 +30,7 @@ public class NuevoAlimentoFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private EditText edtNombre, edtNotas, edtCantidad, edtPresentacion, edtMarca, edtPrecio, edtFechaVencimiento;
-    private Spinner spnTipoAlimento,spnUnidad;
+    private Spinner spnTipoAlimento, spnUnidad;
     private String mParam1;
     private String mParam2;
     private ControladorBD adminDB;
@@ -68,7 +68,7 @@ public class NuevoAlimentoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        adminDB = new ControladorBD(getContext(), "DBCare4Pets", null, 1);
         db = adminDB.getWritableDatabase();
         View vista = inflater.inflate(R.layout.fragment_nuevo_alimento, container, false);
         Bundle bundle = getArguments();
@@ -116,13 +116,14 @@ public class NuevoAlimentoFragment extends Fragment {
             }
         }
     }
-    private AlimentoModel obtenerAlimentoPorId(int id){
+
+    private AlimentoModel obtenerAlimentoPorId(int id) {
         db = adminDB.getReadableDatabase();
-        AlimentoModel alimentoModel =null;
+        AlimentoModel alimentoModel = null;
         Cursor cursor = db.rawQuery("SELECT * FROM Alimentos WHERE ID_comida = " + id + " LIMIT 1", null);
 
-        if (cursor.moveToFirst()){
-            alimentoModel  = new AlimentoModel();
+        if (cursor.moveToFirst()) {
+            alimentoModel = new AlimentoModel();
             alimentoModel.setId(cursor.getInt(0));
             alimentoModel.setNombre(cursor.getString(1));
             alimentoModel.setCantidad(cursor.getDouble(2));
@@ -145,9 +146,9 @@ public class NuevoAlimentoFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        if (getArguments()== null){
+        if (getArguments() == null) {
             inflater.inflate(R.menu.save_or_cancel_menu, menu);
-        }else{
+        } else {
             inflater.inflate(R.menu.save_changes_menu, menu);
         }
 
@@ -157,29 +158,32 @@ public class NuevoAlimentoFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.btnAceptar:
-                insertToDB();
-                onBackPressed();
+                if (validarCampos()) {
+                    insertToDB();
+                    onBackPressed();
+                }
                 break;
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
             case R.id.btnGuardarCambios:
-                editarAlimento(alimentoId);
-                onBackPressed();
+                if (validarCampos()) {
+                    editarAlimento(alimentoId);
+                    onBackPressed();
+                }
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void insertToDB(){
+    private void insertToDB() {
 
         ContentValues values = new ContentValues();
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Unidad", spnUnidad.getSelectedItem().toString());
-        values.put("TipoComida",spnTipoAlimento.getSelectedItem().toString());
+        values.put("TipoComida", spnTipoAlimento.getSelectedItem().toString());
         values.put("Notas", edtNotas.getText().toString());
         values.put("Cantidad", Double.parseDouble(edtCantidad.getText().toString()));
         values.put("Fecha_vencimiento", edtFechaVencimiento.getText().toString());
@@ -187,10 +191,10 @@ public class NuevoAlimentoFragment extends Fragment {
         values.put("Marca", edtMarca.getText().toString());
         values.put("Precio", Double.parseDouble(edtPrecio.getText().toString()));
 
-        long id = db.insert("Alimentos",null,values);
-        if (id>0){
+        long id = db.insert("Alimentos", null, values);
+        if (id > 0) {
             MostrarMensaje("Alimento Agregado");
-        }else{
+        } else {
             MostrarMensaje("Error al Ingresar Datos");
         }
 
@@ -200,6 +204,7 @@ public class NuevoAlimentoFragment extends Fragment {
     private void MostrarMensaje(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
+
     public void onBackPressed() {
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -222,13 +227,13 @@ public class NuevoAlimentoFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void editarAlimento(int id){
+    private void editarAlimento(int id) {
         db = adminDB.getWritableDatabase();
         ContentValues values = new ContentValues();
 
         values.put("Nombre", edtNombre.getText().toString());
         values.put("Unidad", spnUnidad.getSelectedItem().toString());
-        values.put("TipoComida",spnTipoAlimento.getSelectedItem().toString());
+        values.put("TipoComida", spnTipoAlimento.getSelectedItem().toString());
         values.put("Notas", edtNotas.getText().toString());
         values.put("Cantidad", Double.parseDouble(edtCantidad.getText().toString()));
         values.put("Fecha_vencimiento", edtFechaVencimiento.getText().toString());
@@ -236,10 +241,10 @@ public class NuevoAlimentoFragment extends Fragment {
         values.put("Marca", edtMarca.getText().toString());
         values.put("Precio", Double.parseDouble(edtPrecio.getText().toString()));
 
-        long result = db.update("Alimentos",values, "ID_comida = "+ id,null);
-        if (id>0){
+        long result = db.update("Alimentos", values, "ID_comida = " + id, null);
+        if (id > 0) {
             MostrarMensaje("Alimento Modificado");
-        }else{
+        } else {
             MostrarMensaje("Error al modificar Datos");
         }
 
@@ -247,23 +252,26 @@ public class NuevoAlimentoFragment extends Fragment {
 
     }
 
-    public void ValidarCampos(){
-        if (edtNombre.equals("")){
-            edtNombre.setText("Ingrese un nombre");
+    public boolean validarCampos() {
+        boolean esValidado = true;
 
-        }else if (edtCantidad.equals(null)){
-            edtCantidad.setText(0);
-        }else if (edtPresentacion.equals("")){
-            edtPresentacion.setText("Ingrese presentacion");
-        }else if (edtMarca.equals("")){
-            edtMarca.setText("Ingrese marca");
-        }else if (edtPrecio.equals(null)){
-            edtPrecio.setText(0);
-        }else if (edtFechaVencimiento.equals("")){
-            edtFechaVencimiento.setText("Ingrese fecha");
-        }else if (edtNotas.equals("")){
-            edtMarca.setText("Ingrese notas");
+        if (edtNombre.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("El nombre del alimento es requerido");
+        } else if (edtCantidad.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La cantidad del alimento es requerida");
+        } else if (edtPresentacion.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La presentación del alimento es requerida");
+        } else if (edtPrecio.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("El precio del alimento es requerido");
+        } else if (edtFechaVencimiento.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La fecha de vencimiento del alimento es requerida");
         }
 
+        return esValidado;
     }
 }
