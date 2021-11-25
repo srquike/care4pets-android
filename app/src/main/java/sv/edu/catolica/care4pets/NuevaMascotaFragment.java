@@ -124,7 +124,7 @@ public class NuevaMascotaFragment extends Fragment {
         imvFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                procesoCapturar();
+                // procesoCapturar();
             }
         });
 
