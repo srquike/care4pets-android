@@ -64,8 +64,8 @@ public class NuevaMascotaFragment extends Fragment {
     private SQLiteDatabase db;
     private int mascotaId;
     private static final int REQUEST_PERMISSION_CAM = 100, REQUEST_PERMISSION_STORAGE = 200, REQUEST_CAPTURE = 3;
-    Bitmap fotoCapturada;
-
+    private Bitmap fotoCapturada;
+    private boolean esFotoCapturada = false;
 
     public NuevaMascotaFragment() {
 
@@ -178,7 +178,7 @@ public class NuevaMascotaFragment extends Fragment {
                 spnEspecie.setSelection(Arrays.asList(getResources().getStringArray(R.array.especies)).indexOf(mascotaModel.getEspecie()));
                 edtRaza.setText(mascotaModel.getRaza());
                 edtColor.setText(mascotaModel.getColor());
-                edtFechaNacimiento.setText(mascotaModel.getFechaNacimiento().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+                edtFechaNacimiento.setText(mascotaModel.getFechaNacimiento());
 
                 if (mascotaModel.getEsterilizacion().equals("true")) {
                     rbSi.setChecked(true);
@@ -186,7 +186,7 @@ public class NuevaMascotaFragment extends Fragment {
                     rbNo.setChecked(true);
                 }
 
-                edtFechaEsterilizacion.setText(mascotaModel.getFechaEsterilizacion().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+                edtFechaEsterilizacion.setText(mascotaModel.getFechaEsterilizacion());
 
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.getSupportActionBar().setTitle(mascotaModel.getNombre());
@@ -207,9 +207,9 @@ public class NuevaMascotaFragment extends Fragment {
             mascotaModel.setSexo(cursor.getString(3));
             mascotaModel.setEspecie(cursor.getString(4));
             mascotaModel.setColor(cursor.getString(5));
-            mascotaModel.setFechaNacimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            mascotaModel.setFechaNacimiento(cursor.getString(6));
             mascotaModel.setEsterilizacion(cursor.getString(7));
-            mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            mascotaModel.setFechaEsterilizacion(cursor.getString(8));
             mascotaModel.setFoto(R.drawable.pet);
             mascotaModel.setDescripcion(mascotaModel.getRaza() + " - " + mascotaModel.getEspecie() + " - " + mascotaModel.getColor() + " - " + mascotaModel.getSexo());
         }
@@ -239,23 +239,23 @@ public class NuevaMascotaFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.btnAceptar:
-                insertToDB();
-                onBackPressed();
-
+                if (ValidarCampos()) {
+                    insertToDB();
+                    onBackPressed();
+                }
                 break;
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
             case R.id.btnGuardarCambios:
-                editarMascota(mascotaId);
-                onBackPressed();
+                if (ValidarCampos()) {
+                    editarMascota(mascotaId);
+                    onBackPressed();
+                }
                 break;
-
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -362,6 +362,7 @@ public class NuevaMascotaFragment extends Fragment {
             if (resultCode == RESULT_OK && data != null) {
                 fotoCapturada = (Bitmap) data.getExtras().get("data");
                 imvFoto.setImageBitmap(fotoCapturada);
+                esFotoCapturada = true;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -378,84 +379,96 @@ public class NuevaMascotaFragment extends Fragment {
     }
 
     private void guardarFoto(String nombreFoto) {
+        if (esFotoCapturada) {
+            OutputStream fos = null;
+            File miArchivo = null;
+            String nombreArchivo = "";
 
-        OutputStream fos = null;
-        File miArchivo = null;
-        String nombreArchivo = "";
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ContentResolver resolver = getContext().getContentResolver();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContentResolver resolver = getContext().getContentResolver();
+                ContentValues valores = new ContentValues();
 
-            ContentValues valores = new ContentValues();
+                nombreArchivo = nombreFoto;
 
-            nombreArchivo = nombreFoto;
+                valores.put(MediaStore.Images.Media.DISPLAY_NAME, nombreArchivo);
+                valores.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                valores.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/MyAppCare4Pets/Mascotas");
+                valores.put(MediaStore.Images.Media.IS_PENDING, 1);
 
-            valores.put(MediaStore.Images.Media.DISPLAY_NAME, nombreArchivo);
-            valores.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-            valores.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/MyAppCare4Pets/Mascotas");
-            valores.put(MediaStore.Images.Media.IS_PENDING, 1);
-
-            Uri coleccion = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
-            Uri imagenUri = resolver.insert(coleccion, valores);
+                Uri coleccion = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+                Uri imagenUri = resolver.insert(coleccion, valores);
 
 
-            try {
-                fos = resolver.openOutputStream(imagenUri);
-            } catch (FileNotFoundException e) {
-                Toast.makeText(getContext(), "Error de Archivo", Toast.LENGTH_SHORT).show();
+                try {
+                    fos = resolver.openOutputStream(imagenUri);
+                } catch (FileNotFoundException e) {
+                    Toast.makeText(getContext(), "Error de Archivo", Toast.LENGTH_SHORT).show();
+                }
+
+                valores.clear();
+                valores.put(MediaStore.Images.Media.IS_PENDING, 0);
+
+                resolver.update(imagenUri, valores, null, null);
+
+            } else {
+                String Directorio = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+
+                miArchivo = new File(Directorio, nombreArchivo);
+                try {
+                    fos = new FileOutputStream(miArchivo);
+                } catch (FileNotFoundException e) {
+                    Toast.makeText(getContext(), "Error de creacion de archivo", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            valores.clear();
-            valores.put(MediaStore.Images.Media.IS_PENDING, 0);
+            boolean guardado = fotoCapturada.compress(Bitmap.CompressFormat.JPEG, 100, fos);
 
-            resolver.update(imagenUri, valores, null, null);
-
-        } else {
-            String Directorio = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
-
-            miArchivo = new File(Directorio, nombreArchivo);
-            try {
-                fos = new FileOutputStream(miArchivo);
-            } catch (FileNotFoundException e) {
-                Toast.makeText(getContext(), "Error de creacion de archivo", Toast.LENGTH_SHORT).show();
+            if (guardado == false) {
+                Toast.makeText(getContext(), "La foto no se guardo correctamente", Toast.LENGTH_LONG).show();
             }
-        }
 
-        boolean guardado = fotoCapturada.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-
-        if (guardado == false) {
-            Toast.makeText(getContext(), "La foto no se guardo correctamente", Toast.LENGTH_LONG).show();
-        }
-
-        if (fos != null) {
-            try {
-                fos.flush();
-                fos.close();
-            } catch (IOException e) {
-                Toast.makeText(getContext(), "Error " + e.toString(), Toast.LENGTH_SHORT).show();
+            if (fos != null) {
+                try {
+                    fos.flush();
+                    fos.close();
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), "Error " + e.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
-        }
 
-        if (miArchivo != null) {
-            MediaScannerConnection.scanFile(getContext(), new String[]{
-                    miArchivo.toString()
-            }, null, null);
+            if (miArchivo != null) {
+                MediaScannerConnection.scanFile(getContext(), new String[]{
+                        miArchivo.toString()
+                }, null, null);
+            }
         }
     }
 
-    public void ValidarCampos(){
-        if (edtNombre.equals("")){
-            edtNombre.setText("Ingrese un Nombre");
-        }else if (edtRaza.equals("")){
-            edtRaza.setText("Ingrese una raza");
-        }else if (edtColor.equals("")){
-            edtColor.setText("Ingrese un color");
-        }else if (edtFechaNacimiento.equals("")){
-            edtFechaNacimiento.setText("Ingrese una fecha");
-        }
-        else if (edtFechaEsterilizacion.equals("")){
-            edtFechaEsterilizacion.setText("Ingrese una fecha");
-        }
-    }
+    public boolean ValidarCampos() {
+        boolean esValido = true;
 
+        if (edtNombre.getText().toString().isEmpty()) {
+            esValido = false;
+            MostrarMensaje("El nombre de la mascota es requerido");
+        } else if (edtRaza.getText().toString().isEmpty()) {
+            esValido = false;
+            MostrarMensaje("La raza de la mascota es requerida");
+        } else if (edtColor.getText().toString().isEmpty()) {
+            esValido = false;
+            MostrarMensaje("El color de la mascota es requerido");
+        } else if (!rbNo.isChecked() && !rbSi.isChecked()) {
+            esValido = false;
+            MostrarMensaje("Seleccione si la mascota está esterilizada");
+        }
+
+        if (rbSi.isChecked()) {
+            if (edtFechaEsterilizacion.getText().toString().isEmpty()) {
+                esValido = false;
+                MostrarMensaje("Igrese la fecha de esterilización");
+            }
+        }
+
+        return esValido;
+    }
 }

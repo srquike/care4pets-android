@@ -13,8 +13,13 @@ public class MascotaModel {
     private String especie;
     private String sexo;
     private String color;
-    private LocalDate fechaNacimiento;
-    private LocalDate fechaEsterilizacion;
+    private String fechaNacimiento;
+
+    public String getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+    private String fechaEsterilizacion;
     private String esterilizacion;
 
     public String getNombre() {
@@ -61,6 +66,18 @@ public class MascotaModel {
         return raza;
     }
 
+    public void setFechaNacimiento(String fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    public String getFechaEsterilizacion() {
+        return fechaEsterilizacion;
+    }
+
+    public void setFechaEsterilizacion(String fechaEsterilizacion) {
+        this.fechaEsterilizacion = fechaEsterilizacion;
+    }
+
     public void setRaza(String raza) {
         this.raza = raza;
     }
@@ -87,22 +104,6 @@ public class MascotaModel {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public LocalDate getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public LocalDate getFechaEsterilizacion() {
-        return fechaEsterilizacion;
-    }
-
-    public void setFechaEsterilizacion(LocalDate fechaEsterilizacion) {
-        this.fechaEsterilizacion = fechaEsterilizacion;
     }
 
     public String getEsterilizacion() {

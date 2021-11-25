@@ -89,7 +89,7 @@ public class MascotaActivity extends AppCompatActivity {
             spnEspecie.setSelection(Arrays.asList(getResources().getStringArray(R.array.especies)).indexOf(mascotaModel.getEspecie()));
             edtRaza.setText(mascotaModel.getRaza());
             edtColor.setText(mascotaModel.getColor());
-            edtFechaNacimiento.setText(mascotaModel.getFechaNacimiento().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+            edtFechaNacimiento.setText(mascotaModel.getFechaNacimiento());
 
             if (mascotaModel.getEsterilizacion().equals("true")) {
                 rdbSi.setChecked(true);
@@ -97,7 +97,7 @@ public class MascotaActivity extends AppCompatActivity {
                 rdbNo.setChecked(true);
             }
 
-            edtFechaEsterilizacion.setText(mascotaModel.getFechaEsterilizacion().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
+            edtFechaEsterilizacion.setText(mascotaModel.getFechaEsterilizacion());
         }
 
         getSupportActionBar().setTitle(mascotaModel.getNombre());
@@ -151,9 +151,9 @@ public class MascotaActivity extends AppCompatActivity {
             mascotaModel.setSexo(cursor.getString(3));
             mascotaModel.setEspecie(cursor.getString(4));
             mascotaModel.setColor(cursor.getString(5));
-            mascotaModel.setFechaNacimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            mascotaModel.setFechaNacimiento(cursor.getString(6));
             mascotaModel.setEsterilizacion(cursor.getString(7));
-            mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
+            mascotaModel.setFechaEsterilizacion(cursor.getString(8));
             mascotaModel.setFoto(R.drawable.pet);
             mascotaModel.setDescripcion(mascotaModel.getRaza() + " - " + mascotaModel.getEspecie() + " - " + mascotaModel.getColor() + " - " + mascotaModel.getSexo());
         }

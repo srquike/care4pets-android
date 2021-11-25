@@ -19,7 +19,7 @@ public class ControladorBD extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE Usuario(ID_User integer primary key autoincrement, " +
                 "Nombre text, Apellido text, correo text, contraseña text)");
         db.execSQL("CREATE TABLE Mascotas(ID_pet integer primary key autoincrement," +
-                "Nombre text, Raza text,Sexo text,Especie text, Color text,FechaNaci date,Esterilizacion text,FechaEsterilizacion date)");
+                "Nombre text, Raza text,Sexo text,Especie text, Color text,FechaNaci text,Esterilizacion text,FechaEsterilizacion text)");
         db.execSQL("CREATE TABLE Evento(ID_Evento integer primary key autoincrement," +
                 "Nombre text, Fecha date,Hora datetime, TipoEvento text,Descripcion text)");
         db.execSQL("CREATE TABLE Medicamentos(ID_Medicamento integer primary key autoincrement," +

@@ -107,9 +107,9 @@ public class MascotasFragment extends Fragment implements MascotasAdapter.OnMasc
                 mascotaModel.setSexo(cursor.getString(3));
                 mascotaModel.setEspecie(cursor.getString(4));
                 mascotaModel.setColor(cursor.getString(5));
-                mascotaModel.setFechaNacimiento(LocalDate.parse(cursor.getString(6), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                mascotaModel.setFechaNacimiento(cursor.getString(6));
                 mascotaModel.setEsterilizacion(cursor.getString(7));
-                mascotaModel.setFechaEsterilizacion(LocalDate.parse(cursor.getString(8), DateTimeFormatter.ofPattern("d/M/yyyy")));
+                mascotaModel.setFechaEsterilizacion(cursor.getString(8));
                 mascotaModel.setFoto(R.drawable.pet);
                 mascotaModel.setDescripcion(mascotaModel.getRaza() + " - " + mascotaModel.getEspecie() + " - " + mascotaModel.getColor() + " - " + mascotaModel.getSexo());
 
