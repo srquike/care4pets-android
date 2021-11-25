@@ -75,9 +75,9 @@ public class NuevoEventoFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //13 paso
-        if (getArguments()== null){
+        if (getArguments() == null) {
             inflater.inflate(R.menu.save_or_cancel_menu, menu);
-        }else{
+        } else {
             inflater.inflate(R.menu.save_changes_menu, menu);
         }
     }
@@ -85,20 +85,23 @@ public class NuevoEventoFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.btnAceptar:
-                insertToDB();
-                onBackPressed();
+                if (validarCampos()) {
+                    insertToDB();
+                    onBackPressed();
+                }
                 break;
             case R.id.btnCancelar:
                 onBackPressed();
                 break;
             case R.id.btnGuardarCambios:
-                editarEvento(EventoId);
-                onBackPressed();
+                if (validarCampos()) {
+                    editarEvento(EventoId);
+                    onBackPressed();
+                }
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -106,7 +109,7 @@ public class NuevoEventoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        adminDB = new ControladorBD(getContext(),"DBCare4Pets",null,1);
+        adminDB = new ControladorBD(getContext(), "DBCare4Pets", null, 1);
         db = adminDB.getWritableDatabase();
 
         View view = inflater.inflate(R.layout.fragment_nuevo_evento, container, false);
@@ -142,11 +145,11 @@ public class NuevoEventoFragment extends Fragment {
     }
 
     private void llenarCampos(Bundle bundle) {
-        if (bundle != null){
+        if (bundle != null) {
             EventoId = bundle.getInt("Id");
             EventoModel eventoModel = obtenerEventoPorId(EventoId);
 
-            if (eventoModel != null ){
+            if (eventoModel != null) {
                 edtNombreEvento.setText(eventoModel.getNombre());
                 edtFechaEvento.setText(eventoModel.getFecha().format(DateTimeFormatter.ofPattern("d/M/yyyy")));
                 edtHoraEvento.setText(eventoModel.getHora().format(DateTimeFormatter.ofPattern("HH:mm a")));
@@ -160,32 +163,32 @@ public class NuevoEventoFragment extends Fragment {
         }
     }
 
-    private void editarEvento(int id){
+    private void editarEvento(int id) {
         db = adminDB.getWritableDatabase();
         ContentValues values = new ContentValues();
         //values.put("ID_Evento",1);
         values.put("Fecha", edtFechaEvento.getText().toString());
         values.put("Nombre", edtNombreEvento.getText().toString());
-        values.put("Hora",edtHoraEvento.getText().toString());
-        values.put("TipoEvento",spnEvento.getSelectedItem().toString());
-        values.put("Descripcion",edtDescripcion.getText().toString());
+        values.put("Hora", edtHoraEvento.getText().toString());
+        values.put("TipoEvento", spnEvento.getSelectedItem().toString());
+        values.put("Descripcion", edtDescripcion.getText().toString());
 
-        long result = db.update("Evento",values,"ID_Evento = "+ id,null);
-        if (id>0){
+        long result = db.update("Evento", values, "ID_Evento = " + id, null);
+        if (id > 0) {
             MostrarMensaje("Se modificaron los datos");
-        }else{
+        } else {
             MostrarMensaje("Error al modificar Datos");
         }
 
         db.close();
     }
 
-    private EventoModel obtenerEventoPorId(int id){
+    private EventoModel obtenerEventoPorId(int id) {
         db = adminDB.getReadableDatabase();
         EventoModel eventoModel = null;
-        Cursor cursor = db.rawQuery("SELECT * FROM Evento WHERE ID_Evento = " + id + " LIMIT 1 ",null);
+        Cursor cursor = db.rawQuery("SELECT * FROM Evento WHERE ID_Evento = " + id + " LIMIT 1 ", null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             eventoModel = new EventoModel();
             eventoModel.setId(cursor.getInt(0));
             eventoModel.setNombre(cursor.getString(1));
@@ -222,7 +225,7 @@ public class NuevoEventoFragment extends Fragment {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(0,0,0, hourOfDay, minute);
+                calendar.set(0, 0, 0, hourOfDay, minute);
                 edtHoraEvento.setText(timeformat.format(calendar.getTime()));
             }
         }, 12, 0, false);
@@ -230,20 +233,20 @@ public class NuevoEventoFragment extends Fragment {
         timePickerDialog.show();
     }
 
-    private void insertToDB(){
+    private void insertToDB() {
 
         ContentValues values = new ContentValues();
         //values.put("ID_Evento",1);
         values.put("Fecha", edtFechaEvento.getText().toString());
         values.put("Nombre", edtNombreEvento.getText().toString());
-        values.put("Hora",edtHoraEvento.getText().toString());
-        values.put("TipoEvento",spnEvento.getSelectedItem().toString());
-        values.put("Descripcion",edtDescripcion.getText().toString());
+        values.put("Hora", edtHoraEvento.getText().toString());
+        values.put("TipoEvento", spnEvento.getSelectedItem().toString());
+        values.put("Descripcion", edtDescripcion.getText().toString());
 
-        long id = db.insert("Evento",null,values);
-        if (id>0){
+        long id = db.insert("Evento", null, values);
+        if (id > 0) {
             MostrarMensaje("Evento Agregado");
-        }else{
+        } else {
             MostrarMensaje("Error al Ingresar Datos");
         }
 
@@ -260,17 +263,20 @@ public class NuevoEventoFragment extends Fragment {
         fm.popBackStack();
     }
 
-    public void ValidarCampos(){
-        if (edtFechaEvento.equals("")){
-            edtFechaEvento.setText("Ingrese fecha");
-        }else if (edtHoraEvento.equals("")){
-            edtHoraEvento.setText("Ingrese fecha");
-        }else if (edtNombreEvento.equals("")){
-            edtNombreEvento.setText("Ingrese Nombre");
-        }else if (edtDescripcion.equals("")){
-            edtDescripcion.setText("Ingrese Hora");
-        }else {}
+    public boolean validarCampos() {
+        boolean esValidado = true;
 
+        if (edtNombreEvento.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("El nombre del evento es requerido");
+        } else if (edtFechaEvento.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La fecha del evento es requerida");
+        } else if (edtHoraEvento.getText().toString().isEmpty()) {
+            esValidado = false;
+            MostrarMensaje("La hora del evento es requerida");
+        }
 
+        return esValidado;
     }
 }
